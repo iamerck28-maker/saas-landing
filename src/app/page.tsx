@@ -20,9 +20,9 @@ const processes = [
 ];
 
 const portfolios = [
-  { name: "FirstCar", year: "2025", tag: "Marketplace", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=600&h=400&fit=crop", gradient: "from-blue-500 to-blue-700", url: "#" },
-  { name: "LokerMJL", year: "2026", tag: "Dashboard Admin", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop", gradient: "from-indigo-500 to-indigo-700", url: "https://lokermjl.com" },
-  { name: "Sambal Jubleg", year: "2026", tag: "POS System", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop", gradient: "from-red-500 to-orange-500", url: "https://sambaljubleg.com" },
+  { name: "FirstCar", year: "2025", tag: "Marketplace", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=600&h=400&fit=crop", beforeImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop", gradient: "from-blue-500 to-blue-700", url: "#" },
+  { name: "LokerMJL", year: "2026", tag: "Dashboard Admin", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop", beforeImg: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop", gradient: "from-indigo-500 to-indigo-700", url: "https://lokermjl.com" },
+  { name: "Sambal Jubleg", year: "2026", tag: "POS System", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop", beforeImg: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop", gradient: "from-red-500 to-orange-500", url: "https://sambaljubleg.com" },
 ];
 
 const pricing = [
@@ -69,6 +69,30 @@ function useFadeIn(t = 0.15) {
   return { ref, v };
 }
 
+function useCountUp(end: number, duration: number, start: boolean) {
+  const [count, setCount] = useState(0);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!start) return;
+    let startTime: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      setCount(Math.floor(progress * end));
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(step);
+      }
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [start, end, duration]);
+
+  return count;
+}
+
 /* ── Components ───────────────────────────────────────── */
 function F({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const { ref, v } = useFadeIn();
@@ -92,6 +116,30 @@ function FAQ({ q, a, isDark }: { q: string; a: string; isDark: boolean }) {
       <div className="overflow-hidden transition-all duration-300" style={{ maxHeight: o ? "200px" : "0" }}>
         <p className={`text-sm leading-relaxed pb-5 pr-8 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{a}</p>
       </div>
+    </div>
+  );
+}
+
+function CountUpStat({ end, suffix = "", label, duration = 2000, isDark }: { end: number; suffix?: string; label: string; duration?: number; isDark: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [start, setStart] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setStart(true); obs.unobserve(el); }
+    }, { threshold: 0.3 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const count = useCountUp(end, duration, start);
+
+  return (
+    <div ref={ref} className="text-center">
+      <div className={`font-bold text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>{count}{suffix}</div>
+      <div className={`text-sm ${isDark ? "text-gray-500" : "text-gray-400"}`}>{label}</div>
     </div>
   );
 }
@@ -160,10 +208,49 @@ function BackToTop({ isDark }: { isDark: boolean }) {
   );
 }
 
+function WaveDivider({ flip = false, color = "#0a0a0f" }: { flip?: boolean; color?: string }) {
+  return (
+    <div className={`w-full leading-[0] ${flip ? "rotate-180" : ""}`} style={{ marginTop: "-1px", marginBottom: "-1px" }}>
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-[60px] md:h-[80px] block">
+        <path d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" fill={color} />
+      </svg>
+    </div>
+  );
+}
+
+const marqueeClients = ["Hendra Motor", "Bu Siti", "CV Maju Jaya", "Toko Batik Yanti", "FirstCar", "LokerMJL", "Sambal Jubleg", "Warung Teh Ani"];
+
 /* ── Page ─────────────────────────────────────────────── */
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  /* Page loader */
+  const [isLoading, setIsLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      const timer = setTimeout(() => setShowLoader(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
+  /* Portfolio before/after toggle */
+  const [showBefore, setShowBefore] = useState<Set<number>>(new Set());
+  const toggleBefore = useCallback((idx: number) => {
+    setShowBefore(prev => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
+    });
+  }, []);
 
   /* Dark mode */
   const [isDark, setIsDark] = useState(() => {
@@ -232,6 +319,22 @@ export default function Home() {
   }, [phase, line1Text, line2Text]);
 
   return (
+    <>
+    {showLoader && (
+      <div
+        className="fixed inset-0 z-[100] flex flex-col items-center justify-center transition-opacity duration-300"
+        style={{
+          backgroundColor: "#0a0a0f",
+          opacity: isLoading ? 1 : 0,
+          pointerEvents: isLoading ? "auto" : "none",
+        }}
+      >
+        <span className="text-3xl font-bold text-blue-500 mb-6" style={{ animation: "loaderPulse 1.5s ease-in-out infinite" }}>LM Studio</span>
+        <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-full bg-blue-500 rounded-full" style={{ animation: "loaderBar 1.5s ease-in-out forwards" }} />
+        </div>
+      </div>
+    )}
     <main className={`transition-colors duration-300 antialiased ${isDark ? "bg-[#0a0a0f] text-white" : "bg-white text-gray-900"}`}>
 
       {/* Animated gradient keyframes */}
@@ -247,6 +350,18 @@ export default function Home() {
         }
         .animate-fadeIn {
           animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes loaderBar {
+          0% { width: 0%; }
+          100% { width: 100%; }
+        }
+        @keyframes loaderPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(1.03); }
         }
       `}} />
 
@@ -328,15 +443,35 @@ export default function Home() {
           </F>
           <F delay={400}>
             <div className="flex items-center gap-8">
-              <div className="text-center"><div className={`font-bold text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>50+</div><div className={`text-sm ${isDark ? "text-gray-500" : "text-gray-400"}`}>Followers</div></div>
+              <CountUpStat end={50} suffix="+" label="Followers" isDark={isDark} />
               <div className={`w-px h-8 ${isDark ? "bg-white/10" : "bg-gray-200"}`} />
-              <div className="text-center"><div className={`font-bold text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>10+</div><div className={`text-sm ${isDark ? "text-gray-500" : "text-gray-400"}`}>Klien</div></div>
+              <CountUpStat end={10} suffix="+" label="Klien" isDark={isDark} />
               <div className={`w-px h-8 ${isDark ? "bg-white/10" : "bg-gray-200"}`} />
-              <div className="text-center"><div className={`font-bold text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>2024</div><div className={`text-sm ${isDark ? "text-gray-500" : "text-gray-400"}`}>Berdiri</div></div>
+              <CountUpStat end={2024} label="Berdiri" isDark={isDark} />
             </div>
           </F>
         </div>
       </section>
+
+      <WaveDivider color={isDark ? "#111827" : "#f9fafb"} />
+
+      {/* ── CLIENT MARQUEE ──────────────────────────── */}
+      <section className={`py-16 ${isDark ? "bg-[#111827]" : "bg-gray-50"}`}>
+        <div className="max-w-6xl mx-auto px-6 mb-8">
+          <p className={`text-center text-sm font-semibold uppercase tracking-wider ${isDark ? "text-gray-500" : "text-gray-400"}`}>DIPERCAYA OLEH</p>
+        </div>
+        <div className="overflow-hidden">
+          <div className="flex whitespace-nowrap" style={{ animation: "marquee 30s linear infinite" }}>
+            {[...marqueeClients, ...marqueeClients].map((name, i) => (
+              <span key={`${name}-${i}`} className={`inline-flex items-center mx-4 px-6 py-3 rounded-lg border text-sm font-semibold transition-colors duration-300 shrink-0 ${isDark ? "border-white/10 text-gray-400 hover:text-white hover:border-white/30 bg-white/[0.02]" : "border-gray-200 text-gray-400 hover:text-gray-900 hover:border-gray-400 bg-white"}`}>
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider color={isDark ? "#0d1117" : "#ffffff"} />
 
       {/* ── LAYANAN ─────────────────────────────────── */}
       <section id="layanan" className={`py-24 relative scroll-mt-20`}>
@@ -384,6 +519,8 @@ export default function Home() {
         </div>
       </section>
 
+      <WaveDivider color={isDark ? "#0d1117" : "#f9fafb"} />
+
       {/* ── PORTFOLIO ───────────────────────────────── */}
       <section id="portfolio" className="py-24 relative scroll-mt-20">
         <div className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" : "bg-gradient-to-b from-white via-gray-50 to-white"}`} />
@@ -395,32 +532,54 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-6">
             {portfolios.map((p, i) => (
               <F key={p.name} delay={i * 100}>
-                <a href={p.url} target="_blank" rel="noopener noreferrer" className={`block rounded-2xl overflow-hidden transition-all duration-300 group hover:scale-[1.02] hover:shadow-2xl ${isDark ? "bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30" : "bg-gray-50 border border-gray-200 hover:border-blue-300 hover:shadow-blue-100"}`}>
+                <div className={`rounded-2xl overflow-hidden transition-all duration-300 group hover:scale-[1.02] hover:shadow-2xl ${isDark ? "bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30" : "bg-gray-50 border border-gray-200 hover:border-blue-300 hover:shadow-blue-100"}`}>
                   <div className={`h-48 bg-gradient-to-br ${p.gradient} relative overflow-hidden`}>
+                    {/* After image (default) */}
                     <img
                       src={p.img}
                       alt={p.name}
                       loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${showBefore.has(i) ? "opacity-0" : "opacity-100"} ${!showBefore.has(i) ? "group-hover:scale-110" : ""} ${!showBefore.has(i) ? "transition-transform duration-700" : ""}`}
                     />
+                    {/* Before image */}
+                    {p.beforeImg && (
+                      <img
+                        src={p.beforeImg}
+                        alt={`${p.name} before`}
+                        loading="lazy"
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${showBefore.has(i) ? "opacity-100" : "opacity-0"}`}
+                      />
+                    )}
                     {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center z-[2]">
                       <h3 className="text-white font-bold text-xl mb-1">{p.name}</h3>
                       <span className="text-blue-300 text-sm font-semibold mb-3">{p.tag}</span>
-                      <span className="px-4 py-2 bg-white/10 backdrop-blur-sm text-white text-sm font-semibold rounded-lg border border-white/20 group-hover:bg-white/20 transition">Lihat Live →</span>
+                      <a href={p.url} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white/10 backdrop-blur-sm text-white text-sm font-semibold rounded-lg border border-white/20 group-hover:bg-white/20 transition">Lihat Live →</a>
                     </div>
-                    <div className="absolute top-4 right-4 bg-black/40 backdrop-blur text-xs font-semibold px-3 py-1 rounded-full text-white">{p.year}</div>
+                    {/* Year badge */}
+                    <div className="absolute top-4 right-4 bg-black/40 backdrop-blur text-xs font-semibold px-3 py-1 rounded-full text-white z-[2]">{p.year}</div>
+                    {/* Before/After toggle */}
+                    {p.beforeImg && (
+                      <button
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleBefore(i); }}
+                        className="absolute top-4 left-4 z-[2] bg-black/40 backdrop-blur text-xs font-semibold px-3 py-1 rounded-full text-white border border-white/20 hover:bg-white/20 transition cursor-pointer"
+                      >
+                        {showBefore.has(i) ? 'After' : 'Before'}
+                      </button>
+                    )}
                   </div>
                   <div className="p-6">
                     <h3 className={`font-bold text-lg mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>{p.name}</h3>
                     <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full">{p.tag}</span>
                   </div>
-                </a>
+                </div>
               </F>
             ))}
           </div>
         </div>
       </section>
+
+      <WaveDivider color={isDark ? "#0a0a0f" : "#ffffff"} />
 
       {/* ── KENAPA PILIH KAMI ───────────────────────── */}
       <section className="py-24 scroll-mt-20">
@@ -443,6 +602,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <WaveDivider color={isDark ? "#0d1117" : "#f9fafb"} />
 
       {/* ── HARGA ───────────────────────────────────── */}
       <section id="harga" className="py-24 relative scroll-mt-20">
@@ -565,5 +726,6 @@ export default function Home() {
       <FloatingWA />
       <BackToTop isDark={isDark} />
     </main>
+    </>
   );
 }
