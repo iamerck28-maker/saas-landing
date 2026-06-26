@@ -243,12 +243,12 @@ export default function Home() {
     });
   }, []);
 
-  /* Dark mode */
+  /* Dark mode — default always dark */
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === "undefined") return true;
     const stored = localStorage.getItem("theme");
     if (stored) return stored === "dark";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return true; // always default to dark
   });
   const toggleDark = useCallback(() => {
     setIsDark((prev) => {
@@ -258,6 +258,11 @@ export default function Home() {
       return next;
     });
   }, []);
+
+  /* Sync dark class to <html> on mount + toggle */
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
 
   /* Scroll progress */
   const [scrollPct, setScrollPct] = useState(0);
