@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 
 /* ── Data ─────────────────────────────────────────────── */
 const WA_BASE = "https://wa.me/6285176718017?text=";
@@ -99,8 +99,9 @@ function F({ children, className = "", delay = 0 }: { children: React.ReactNode;
   return (
     <div ref={ref} className={className} style={{
       opacity: v ? 1 : 0,
-      transform: v ? "translateY(0)" : "translateY(30px)",
-      transition: `opacity .7s cubic-bezier(.16,1,.3,1) ${delay}ms, transform .7s cubic-bezier(.16,1,.3,1) ${delay}ms`,
+      transform: v ? "translateY(0) scale(1)" : "translateY(30px) scale(0.95)",
+      filter: v ? "blur(0px)" : "blur(4px)",
+      transition: `opacity .7s cubic-bezier(.16,1,.3,1) ${delay}ms, transform .7s cubic-bezier(.16,1,.3,1) ${delay}ms, filter .7s cubic-bezier(.16,1,.3,1) ${delay}ms`,
     }}>{children}</div>
   );
 }
@@ -210,6 +211,36 @@ function BackToTop({ isDark }: { isDark: boolean }) {
 
 const marqueeClients = ["Hendra Motor", "Bu Siti", "CV Maju Jaya", "Toko Batik Yanti", "FirstCar", "LokerMJL", "Sambal Jubleg", "Warung Teh Ani"];
 
+/* ── Particles ───────────────────────────────────────── */
+function Particles({ isDark }: { isDark: boolean }) {
+  const particles = useMemo(() => {
+    return Array.from({ length: 25 }, (_, i) => ({
+      id: i,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      size: Math.random() > 0.5 ? "w-1.5 h-1.5" : "w-1 h-1",
+      duration: `${10 + Math.random() * 10}s`,
+      delay: `${Math.random() * 10}s`,
+    }));
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className={`absolute rounded-full ${p.size} ${isDark ? "bg-blue-400/30" : "bg-blue-500/20"}`}
+          style={{
+            top: p.top,
+            left: p.left,
+            animation: `particleFloat ${p.duration} linear ${p.delay} infinite`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ── Page ─────────────────────────────────────────────── */
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -307,6 +338,31 @@ export default function Home() {
       }
     }
   }, [phase, line1Text, line2Text]);
+  /* Testimonial carousel */
+  const [currentTesti, setCurrentTesti] = useState(0);
+  const testiInterval = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const startInterval = () => {
+      testiInterval.current = setInterval(() => {
+        setCurrentTesti(prev => (prev + 1) % testi.length);
+      }, 4000);
+    };
+    startInterval();
+    return () => { if (testiInterval.current) clearInterval(testiInterval.current); };
+  }, []);
+
+  const handleTestiHover = () => {
+    if (testiInterval.current) clearInterval(testiInterval.current);
+  };
+
+  const handleTestiLeave = () => {
+    if (testiInterval.current) clearInterval(testiInterval.current);
+    testiInterval.current = setInterval(() => {
+      setCurrentTesti(prev => (prev + 1) % testi.length);
+    }, 4000);
+  };
+
 
   return (
     <>
@@ -353,6 +409,20 @@ export default function Home() {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.6; transform: scale(1.03); }
         }
+        @keyframes particleFloat {
+          0% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+        @property --angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
+        }
+        @keyframes rotateGradient {
+          to { --angle: 360deg; }
+        }
       `}} />
 
       {/* ── NAV ─────────────────────────────────────── */}
@@ -369,7 +439,9 @@ export default function Home() {
             <a href="#proses" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Proses</a>
             <a href="#portfolio" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Portfolio</a>
             <a href="#harga" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Harga</a>
-            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">Konsultasi Gratis</a>
+            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center p-[2px] rounded-xl font-semibold text-white transition" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
+              <span className="px-5 py-2 bg-[#0a0a0f] rounded-[10px] text-sm font-bold text-white hover:bg-[#12121a] transition">Konsultasi Gratis</span>
+            </a>
           </div>
 
           {/* Mobile: dark toggle + hamburger */}
@@ -386,7 +458,9 @@ export default function Home() {
             <a href="#proses" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Proses</a>
             <a href="#portfolio" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Portfolio</a>
             <a href="#harga" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Harga</a>
-            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-center hover:bg-blue-700 transition">Konsultasi Gratis</a>
+            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="inline-flex items-center justify-center p-[2px] rounded-xl font-semibold text-white transition w-full" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
+              <span className="px-5 py-2.5 bg-[#0a0a0f] rounded-[10px] text-sm font-bold text-white text-center flex-1">Konsultasi Gratis</span>
+            </a>
           </div>
         </div>
       </nav>
@@ -406,6 +480,7 @@ export default function Home() {
           <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[120px]" />
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-[100px]" />
         </div>
+        <Particles isDark={isDark} />
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
           <F>
             <div className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 mb-8 ${isDark ? "bg-blue-500/10 border border-blue-500/20" : "bg-blue-50 border border-blue-200"}`}>
@@ -427,8 +502,12 @@ export default function Home() {
           </F>
           <F delay={300}>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <a href="#harga" className="px-8 py-4 bg-blue-600 text-white font-bold text-base rounded-lg hover:bg-blue-700 transition text-center">Lihat Paket</a>
-              <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className={`px-8 py-4 font-bold text-base rounded-lg transition text-center ${isDark ? "bg-white/5 border border-white/10 text-white hover:bg-white/10" : "bg-gray-100 border border-gray-200 text-gray-900 hover:bg-gray-200"}`}>Konsultasi via WhatsApp</a>
+              <a href="#harga" className="inline-flex items-center justify-center p-[2px] rounded-xl font-bold transition" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
+                <span className="px-8 py-4 bg-[#0a0a0f] rounded-[10px] text-white text-base font-bold hover:bg-[#12121a] transition text-center">Lihat Paket</span>
+              </a>
+              <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center p-[2px] rounded-xl font-bold transition" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
+                <span className={`px-8 py-4 rounded-[10px] text-base font-bold transition text-center ${isDark ? "bg-[#0a0a0f] text-white hover:bg-[#12121a]" : "bg-[#0a0a0f] text-white hover:bg-[#12121a]"}`}>Konsultasi via WhatsApp</span>
+              </a>
             </div>
           </F>
           <F delay={400}>
@@ -495,16 +574,40 @@ export default function Home() {
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Cara kami bekerja</h2></F>
             <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Simpel dan transparan.</p></F>
           </div>
-          <div className="grid md:grid-cols-4 gap-6">
-            {processes.map((p, i) => (
-              <F key={p.n} delay={i * 100}>
-                <div className={`text-center p-6 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${isDark ? "" : "bg-gray-50"}`}>
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-lg font-bold mx-auto mb-5 ${i === 3 ? "bg-gradient-to-br from-emerald-500 to-teal-500 text-white" : "bg-blue-500/10 text-blue-400"}`}>{p.n}</div>
-                  <h3 className={`font-bold text-lg mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{p.t}</h3>
-                  <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>{p.d}</p>
-                </div>
-              </F>
-            ))}
+          {/* Desktop: Horizontal Timeline */}
+          <div className="hidden md:block">
+            <div className="relative">
+              {/* Connecting line */}
+              <div className="absolute top-6 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 to-blue-600" />
+              <div className="flex justify-between">
+                {processes.map((p, i) => (
+                  <F key={p.n} delay={i * 200}>
+                    <div className="relative flex flex-col items-center" style={{ width: '180px' }}>
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold z-10 ${i === 3 ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30" : "bg-blue-600 text-white shadow-lg shadow-blue-600/30"}`}>{p.n}</div>
+                      <h3 className={`font-bold text-base mt-4 mb-2 text-center ${isDark ? "text-white" : "text-gray-900"}`}>{p.t}</h3>
+                      <p className={`text-xs text-center ${isDark ? "text-gray-400" : "text-gray-500"}`}>{p.d}</p>
+                    </div>
+                  </F>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Mobile: Vertical Timeline */}
+          <div className="md:hidden">
+            <div className="relative pl-10">
+              <div className="absolute left-[15px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-blue-500 to-blue-600" />
+              <div className="flex flex-col gap-8">
+                {processes.map((p, i) => (
+                  <F key={p.n} delay={i * 200}>
+                    <div className="relative">
+                      <div className={`absolute -left-10 top-1 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${i === 3 ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30" : "bg-blue-600 text-white shadow-lg shadow-blue-600/30"}`}>{p.n}</div>
+                      <h3 className={`font-bold text-lg mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>{p.t}</h3>
+                      <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>{p.d}</p>
+                    </div>
+                  </F>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -589,6 +692,35 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── TECHNOLOGY ──────────────────────────────── */}
+      <section className="py-24 scroll-mt-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Technology</span></F>
+            <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Teknologi modern yang kami gunakan</h2></F>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[
+              { emoji: "⚛️", name: "React" },
+              { emoji: "▲", name: "Next.js" },
+              { emoji: "🎨", name: "Tailwind CSS" },
+              { emoji: "🟢", name: "Node.js" },
+              { emoji: "🗄️", name: "PostgreSQL" },
+              { emoji: "☁️", name: "Vercel" },
+              { emoji: "🐙", name: "GitHub" },
+              { emoji: "📱", name: "Responsive" },
+            ].map((tech, i) => (
+              <F key={tech.name} delay={i * 100}>
+                <div className={`p-6 rounded-2xl text-center transition-all duration-500 hover:scale-110 cursor-default grayscale hover:grayscale-0 ${isDark ? "bg-white/[0.02] text-gray-400 hover:text-white border border-white/[0.06] hover:border-blue-500/30" : "bg-gray-50 text-gray-500 hover:text-gray-900 border border-gray-200 hover:border-blue-300"}`}>
+                  <div className="text-4xl mb-3">{tech.emoji}</div>
+                  <div className="text-sm font-semibold">{tech.name}</div>
+                </div>
+              </F>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── HARGA ───────────────────────────────────── */}
       <section id="harga" className="py-24 relative scroll-mt-20">
         <div className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" : "bg-gradient-to-b from-white via-gray-50 to-white"}`} />
@@ -601,28 +733,40 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-6 items-start">
             {pricing.map((p, i) => (
               <F key={p.name} delay={i * 100}>
-                <div className={`p-8 rounded-2xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${p.pop ? "bg-gradient-to-b from-blue-600 to-blue-800 border-blue-400/30 shadow-2xl shadow-blue-600/20 scale-[1.02]" : isDark ? "bg-white/[0.02] border-white/[0.06] hover:border-blue-500/30" : "bg-gray-50 border-gray-200 hover:border-blue-300"}`}>
-                  {p.pop && <div className="text-xs font-bold text-white bg-emerald-500 px-3 py-1 rounded-full inline-block mb-4">Terpopuler</div>}
-                  <h3 className={`font-bold text-xl mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{p.name}</h3>
-                  <div className={`text-3xl font-extrabold mb-1 ${p.pop ? "text-white" : "text-blue-400"}`}>{p.price}</div>
-                  <p className={`text-sm mb-6 ${isDark ? "text-gray-500" : "text-gray-400"}`}>{p.desc}</p>
-                  <ul className="space-y-3 text-sm mb-8">
-                    {p.f.map((f) => (
-                      <li key={f} className="flex items-center gap-2">
-                        <span className={p.pop ? "text-emerald-300" : "text-emerald-400"}>✓</span>
-                        <span className={isDark ? "text-gray-300" : "text-gray-600"}>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <a
-                    href={wa(`Halo LM Studio, saya tertarik paket ${p.name}.`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`block text-center py-3 font-semibold rounded-lg transition ${p.pop ? "bg-white text-blue-700 hover:shadow-xl" : isDark ? "border border-white/10 text-white hover:bg-white/5" : "border border-gray-300 text-gray-900 hover:bg-gray-100"}`}
-                  >
-                    Pesan Sekarang
-                  </a>
-                </div>
+                {p.pop ? (
+                  <div className="relative p-[2px] rounded-2xl scale-[1.02] shadow-2xl shadow-blue-600/20" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
+                    <div className="p-8 rounded-[14px] backdrop-blur-xl border border-white/10 bg-gradient-to-b from-blue-600/90 to-blue-800/90">
+                      <div className="text-xs font-bold text-white bg-emerald-500 px-3 py-1 rounded-full inline-block mb-4">Terpopuler</div>
+                      <h3 className="font-bold text-xl mb-2 text-white">{p.name}</h3>
+                      <div className="text-3xl font-extrabold mb-1 text-white">{p.price}</div>
+                      <p className="text-sm mb-6 text-blue-200">{p.desc}</p>
+                      <ul className="space-y-3 text-sm mb-8">
+                        {p.f.map((f) => (
+                          <li key={f} className="flex items-center gap-2">
+                            <span className="text-emerald-300">✓</span>
+                            <span className="text-blue-100">{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <a href={wa(`Halo LM Studio, saya tertarik paket ${p.name}.`)} target="_blank" rel="noopener noreferrer" className="block text-center py-3 font-semibold rounded-lg transition bg-white text-blue-700 hover:shadow-xl">Pesan Sekarang</a>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={`p-8 rounded-2xl backdrop-blur-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-blue-500/10 ${isDark ? "bg-white/[0.03] border-white/10 hover:border-blue-500/30" : "bg-white/80 border-white/10 hover:border-blue-500/30 hover:shadow-blue-500/10"}`}>
+                    <h3 className={`font-bold text-xl mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{p.name}</h3>
+                    <div className={`text-3xl font-extrabold mb-1 text-blue-400`}>{p.price}</div>
+                    <p className={`text-sm mb-6 ${isDark ? "text-gray-500" : "text-gray-400"}`}>{p.desc}</p>
+                    <ul className="space-y-3 text-sm mb-8">
+                      {p.f.map((f) => (
+                        <li key={f} className="flex items-center gap-2">
+                          <span className="text-emerald-400">✓</span>
+                          <span className={isDark ? "text-gray-300" : "text-gray-600"}>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <a href={wa(`Halo LM Studio, saya tertarik paket ${p.name}.`)} target="_blank" rel="noopener noreferrer" className={`block text-center py-3 font-semibold rounded-lg transition ${isDark ? "border border-white/10 text-white hover:bg-white/5" : "border border-gray-300 text-gray-900 hover:bg-gray-100"}`}>Pesan Sekarang</a>
+                  </div>
+                )}
               </F>
             ))}
           </div>
@@ -644,18 +788,31 @@ export default function Home() {
             <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Testimoni</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Kata mereka yang sudah percaya</h2></F>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {testi.map((t, i) => (
-              <F key={t.name} delay={i * 100}>
-                <div className={`p-6 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${isDark ? "bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/20" : "bg-gray-50 border border-gray-200 hover:border-blue-200"}`}>
-                  <div className="text-amber-400 text-sm mb-3">★★★★★</div>
-                  <p className={`text-sm mb-4 leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>&quot;{t.t}&quot;</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white" style={{ backgroundColor: t.c + "30", color: t.c }}>{t.i}</div>
-                    <div><div className={`font-semibold text-sm ${isDark ? "text-white" : "text-gray-900"}`}>{t.name}</div><div className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"}`}>{t.role}</div></div>
+          <div className="overflow-hidden" onMouseEnter={handleTestiHover} onMouseLeave={handleTestiLeave}>
+            <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentTesti * 100}%)` }}>
+              {testi.map((t, i) => (
+                <div key={t.name} className="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-3">
+                  <div className={`p-6 rounded-2xl h-full transition-all duration-300 ${isDark ? "bg-white/[0.02] border border-white/[0.06]" : "bg-gray-50 border border-gray-200"}`}>
+                    <div className="text-amber-400 text-sm mb-3">★★★★★</div>
+                    <p className={`text-sm mb-4 leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>&quot;{t.t}&quot;</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white" style={{ backgroundColor: t.c + "30", color: t.c }}>{t.i}</div>
+                      <div><div className={`font-semibold text-sm ${isDark ? "text-white" : "text-gray-900"}`}>{t.name}</div><div className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"}`}>{t.role}</div></div>
+                    </div>
                   </div>
                 </div>
-              </F>
+              ))}
+            </div>
+          </div>
+          {/* Carousel dots */}
+          <div className="flex justify-center gap-2 mt-6">
+            {testi.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentTesti(i)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${i === currentTesti ? (isDark ? "bg-blue-500" : "bg-blue-500") : (isDark ? "bg-gray-600" : "bg-gray-300")}`}
+                aria-label={`Go to testimonial ${i + 1}`}
+              />
             ))}
           </div>
         </div>
