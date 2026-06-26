@@ -6,10 +6,10 @@ const WA_BASE = "https://wa.me/6285176718017?text=";
 const wa = (msg: string) => `${WA_BASE}${encodeURIComponent(msg)}`;
 
 const services = [
-  { icon: "🖥️", title: "Landing Page", desc: "Halaman tunggal powerful untuk promosi. Dioptimasi untuk konversi.", tag: "7 hari kerja" },
-  { icon: "🏢", title: "Company Profile", desc: "Website multi-halaman profesional — profil, layanan, kontak.", tag: "5-10 Halaman" },
-  { icon: "🛒", title: "Toko Online", desc: "Jual produk lewat website. Katalog + order via WhatsApp.", tag: "Siap berjualan" },
-  { icon: "💻", title: "Aplikasi Web Custom", desc: "Sistem khusus — manajemen data, laporan, integrasi API.", tag: "Sesuai kebutuhan" },
+  { icon: "🖥️", title: "Landing Page", desc: "Halaman tunggal powerful untuk promosi. Dioptimasi untuk konversi.", tag: "7 hari kerja", cta: "Lihat Detail →" },
+  { icon: "🏢", title: "Company Profile", desc: "Website multi-halaman profesional — profil, layanan, kontak.", tag: "5-10 Halaman", cta: "Lihat Detail →" },
+  { icon: "🛒", title: "Toko Online", desc: "Jual produk lewat website. Katalog + order via WhatsApp.", tag: "Siap berjualan", cta: "Lihat Detail →" },
+  { icon: "💻", title: "Aplikasi Web Custom", desc: "Sistem khusus — manajemen data, laporan, integrasi API.", tag: "Sesuai kebutuhan", cta: "Lihat Detail →" },
 ];
 
 const processes = [
@@ -308,30 +308,6 @@ export default function Home() {
       }
     }
   }, [phase, line1Text, line2Text]);
-  /* Testimonial carousel */
-  const [currentTesti, setCurrentTesti] = useState(0);
-  const testiInterval = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    const startInterval = () => {
-      testiInterval.current = setInterval(() => {
-        setCurrentTesti(prev => (prev + 1) % testi.length);
-      }, 4000);
-    };
-    startInterval();
-    return () => { if (testiInterval.current) clearInterval(testiInterval.current); };
-  }, []);
-
-  const handleTestiHover = () => {
-    if (testiInterval.current) clearInterval(testiInterval.current);
-  };
-
-  const handleTestiLeave = () => {
-    if (testiInterval.current) clearInterval(testiInterval.current);
-    testiInterval.current = setInterval(() => {
-      setCurrentTesti(prev => (prev + 1) % testi.length);
-    }, 4000);
-  };
 
 
   return (
@@ -383,6 +359,17 @@ export default function Home() {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.6; transform: scale(1.03); }
         }
+        @keyframes glowOrb1 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+          33% { transform: translate(30px, -20px) scale(1.1); opacity: 0.2; }
+          66% { transform: translate(-20px, 15px) scale(0.95); opacity: 0.12; }
+        }
+        @keyframes glowOrb2 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+          50% { transform: translate(-40px, 25px) scale(1.15); opacity: 0.18; }
+        }
+        ::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}} />
 
       {/* ── NAV ─────────────────────────────────────── */}
@@ -399,7 +386,7 @@ export default function Home() {
             <a href="#proses" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Proses</a>
             <a href="#portfolio" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Portfolio</a>
             <a href="#harga" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Harga</a>
-            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold text-sm hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">
+            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="px-5 py-2 bg-cyan-500 text-white rounded-lg font-semibold text-sm hover:bg-cyan-600 transition shadow-lg shadow-cyan-500/20">
               Konsultasi Gratis
             </a>
           </div>
@@ -418,7 +405,7 @@ export default function Home() {
             <a href="#proses" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Proses</a>
             <a href="#portfolio" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Portfolio</a>
             <a href="#harga" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Harga</a>
-            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-sm text-center w-full hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">
+            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="px-5 py-2.5 bg-cyan-500 text-white rounded-lg font-semibold text-sm text-center w-full hover:bg-cyan-600 transition shadow-lg shadow-cyan-500/20">
               Konsultasi Gratis
             </a>
           </div>
@@ -437,8 +424,9 @@ export default function Home() {
               animation: "gradientShift 18s ease infinite",
             }}
           />
-          <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[120px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-[100px]" />
+          <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-blue-600 rounded-full blur-[120px] z-0 dark:opacity-100 opacity-50" style={{ animation: "glowOrb1 20s ease-in-out infinite" }} />
+          <div className="absolute top-1/3 right-[5%] w-[400px] h-[400px] bg-cyan-500 rounded-full blur-[120px] z-0 dark:opacity-100 opacity-50" style={{ animation: "glowOrb2 25s ease-in-out infinite 5s" }} />
+          <div className="absolute bottom-[10%] left-1/3 w-[300px] h-[300px] bg-indigo-600 rounded-full blur-[120px] z-0 dark:opacity-100 opacity-50" style={{ animation: "glowOrb1 18s ease-in-out infinite 8s" }} />
         </div>
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
           <F>
@@ -461,7 +449,7 @@ export default function Home() {
           </F>
           <F delay={300}>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <a href="#harga" className="px-8 py-4 bg-blue-600 text-white rounded-lg text-base font-bold hover:bg-blue-700 transition text-center shadow-lg shadow-blue-600/20">
+              <a href="#harga" className="px-8 py-4 bg-cyan-500 text-white rounded-lg text-base font-bold hover:bg-cyan-600 transition text-center shadow-lg shadow-cyan-500/20">
                 Lihat Paket
               </a>
               <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className={`px-8 py-4 rounded-lg text-base font-bold transition text-center border ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-gray-300 text-gray-900 hover:bg-gray-100"}`}>
@@ -506,7 +494,7 @@ export default function Home() {
         <div className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" : "bg-gradient-to-b from-white via-gray-50 to-white"}`} />
         <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Layanan</span></F>
+            <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Layanan</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Apa yang kami kerjakan</h2></F>
             <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Dari landing page sederhana sampai sistem web kompleks.</p></F>
           </div>
@@ -518,6 +506,7 @@ export default function Home() {
                   <h3 className={`font-bold text-lg mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{s.title}</h3>
                   <p className={`text-sm leading-relaxed mb-4 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{s.desc}</p>
                   <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full">{s.tag}</span>
+                  <a href="#harga" className={`text-sm font-semibold mt-4 inline-block transition ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}>{s.cta}</a>
                 </div>
               </F>
             ))}
@@ -529,7 +518,7 @@ export default function Home() {
       <section id="proses" className="py-24 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Proses Kerja</span></F>
+            <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Proses Kerja</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Cara kami bekerja</h2></F>
             <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Simpel dan transparan.</p></F>
           </div>
@@ -576,7 +565,7 @@ export default function Home() {
         <div className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" : "bg-gradient-to-b from-white via-gray-50 to-white"}`} />
         <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Portfolio</span></F>
+            <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Portfolio</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Project yang kami kerjakan</h2></F>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
@@ -633,7 +622,7 @@ export default function Home() {
       <section className="py-24 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Keunggulan</span></F>
+            <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Keunggulan</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Kenapa pilih LM Studio?</h2></F>
             <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Bukan cuma bikin website — kami jaga hubungan jangka panjang.</p></F>
           </div>
@@ -655,7 +644,7 @@ export default function Home() {
       <section className="py-24 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Technology</span></F>
+            <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Technology</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Teknologi modern yang kami gunakan</h2></F>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -670,9 +659,10 @@ export default function Home() {
               { emoji: "📱", name: "Responsive" },
             ].map((tech, i) => (
               <F key={tech.name} delay={i * 100}>
-                <div className={`p-6 rounded-2xl text-center transition-all duration-500 hover:scale-110 cursor-default grayscale hover:grayscale-0 ${isDark ? "bg-white/[0.02] text-gray-400 hover:text-white border border-white/[0.06] hover:border-blue-500/30" : "bg-gray-50 text-gray-500 hover:text-gray-900 border border-gray-200 hover:border-blue-300"}`}>
+                <div className={`p-6 rounded-2xl text-center transition-all duration-500 hover:scale-110 cursor-default grayscale hover:grayscale-0 ${isDark ? "bg-white/[0.02] text-gray-400 hover:text-white border border-white/[0.06] hover:border-cyan-500/30" : "bg-gray-50 text-gray-500 hover:text-gray-900 border border-gray-200 hover:border-cyan-300"}`}>
                   <div className="text-4xl mb-3">{tech.emoji}</div>
                   <div className="text-sm font-semibold">{tech.name}</div>
+                  <a href="#harga" className={`text-xs font-semibold mt-2 inline-block transition ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}>Lihat Detail →</a>
                 </div>
               </F>
             ))}
@@ -685,7 +675,7 @@ export default function Home() {
         <div className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" : "bg-gradient-to-b from-white via-gray-50 to-white"}`} />
         <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Harga</span></F>
+            <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Harga</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Pilih Paket</h2></F>
             <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Transparan, tanpa biaya tersembunyi</p></F>
           </div>
@@ -693,7 +683,7 @@ export default function Home() {
             {pricing.map((p, i) => (
               <F key={p.name} delay={i * 100}>
                 {p.pop ? (
-                  <div className="relative rounded-2xl scale-[1.02] shadow-2xl shadow-blue-600/20 border border-blue-500/30 bg-gradient-to-b from-blue-600 to-blue-800">
+                  <div className="relative rounded-2xl scale-[1.02] shadow-2xl shadow-cyan-600/20 border border-cyan-500/30 bg-gradient-to-b from-cyan-600 to-cyan-800">
                     <div className="p-8 rounded-2xl backdrop-blur-xl">
                       <div className="text-xs font-bold text-white bg-emerald-500 px-3 py-1 rounded-full inline-block mb-4">Terpopuler</div>
                       <h3 className="font-bold text-xl mb-2 text-white">{p.name}</h3>
@@ -744,13 +734,17 @@ export default function Home() {
       <section className="py-24 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Testimoni</span></F>
+            <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Testimoni</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Kata mereka yang sudah percaya</h2></F>
           </div>
-          <div className="overflow-hidden" onMouseEnter={handleTestiHover} onMouseLeave={handleTestiLeave}>
-            <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentTesti * 100}%)` }}>
-              {testi.map((t, i) => (
-                <div key={t.name} className="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-3">
+          <div className="relative">
+            {/* Fade gradient left */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-[#0a0a0f] to-transparent dark:block hidden" />
+            <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent dark:hidden block" />
+            {/* Scroll container */}
+            <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory flex gap-6 pb-4">
+              {testi.map((t) => (
+                <div key={t.name} className="min-w-[300px] md:min-w-[350px] flex-shrink-0 snap-center">
                   <div className={`p-6 rounded-2xl h-full transition-all duration-300 ${isDark ? "bg-white/[0.02] border border-white/[0.06]" : "bg-gray-50 border border-gray-200"}`}>
                     <div className="text-amber-400 text-sm mb-3">★★★★★</div>
                     <p className={`text-sm mb-4 leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>&quot;{t.t}&quot;</p>
@@ -762,17 +756,9 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          </div>
-          {/* Carousel dots */}
-          <div className="flex justify-center gap-2 mt-6">
-            {testi.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentTesti(i)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${i === currentTesti ? (isDark ? "bg-blue-500" : "bg-blue-500") : (isDark ? "bg-gray-600" : "bg-gray-300")}`}
-                aria-label={`Go to testimonial ${i + 1}`}
-              />
-            ))}
+            {/* Fade gradient right */}
+            <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-[#0a0a0f] to-transparent dark:block hidden" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent dark:hidden block" />
           </div>
         </div>
       </section>
@@ -781,7 +767,7 @@ export default function Home() {
       <section className="py-24 scroll-mt-20">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-12">
-            <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">FAQ</span></F>
+            <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">FAQ</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Pertanyaan yang Sering Ditanyakan</h2></F>
           </div>
           <F delay={100}>
@@ -808,8 +794,10 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ──────────────────────────────────── */}
-      <footer className={`border-t py-12 ${isDark ? "border-white/5" : "border-gray-200"}`}>
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <footer className={`relative border-t py-12 ${isDark ? "border-white/5" : "border-gray-200"}`}>
+        {/* Glow at top */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-gradient-to-b from-cyan-500/20 to-transparent rounded-full blur-[80px] dark:opacity-100 opacity-30" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <span className="text-xl font-bold text-blue-500">LM Studio</span>
             <p className={`text-sm mt-1 ${isDark ? "text-gray-500" : "text-gray-400"}`}>Bagian dari ekosistem lokermjl.com</p>
