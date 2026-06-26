@@ -208,16 +208,6 @@ function BackToTop({ isDark }: { isDark: boolean }) {
   );
 }
 
-function WaveDivider({ flip = false, color = "#0a0a0f" }: { flip?: boolean; color?: string }) {
-  return (
-    <div className={`w-full leading-[0] ${flip ? "rotate-180" : ""}`} style={{ marginTop: "-1px", marginBottom: "-1px" }}>
-      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-[60px] md:h-[80px] block">
-        <path d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" fill={color} />
-      </svg>
-    </div>
-  );
-}
-
 const marqueeClients = ["Hendra Motor", "Bu Siti", "CV Maju Jaya", "Toko Batik Yanti", "FirstCar", "LokerMJL", "Sambal Jubleg", "Warung Teh Ani"];
 
 /* ── Page ─────────────────────────────────────────────── */
@@ -453,7 +443,7 @@ export default function Home() {
         </div>
       </section>
 
-      <WaveDivider color={isDark ? "#111827" : "#f9fafb"} />
+
 
       {/* ── CLIENT MARQUEE ──────────────────────────── */}
       <section className={`py-16 ${isDark ? "bg-[#111827]" : "bg-gray-50"}`}>
@@ -471,7 +461,7 @@ export default function Home() {
         </div>
       </section>
 
-      <WaveDivider color={isDark ? "#0d1117" : "#ffffff"} />
+
 
       {/* ── LAYANAN ─────────────────────────────────── */}
       <section id="layanan" className={`py-24 relative scroll-mt-20`}>
@@ -518,8 +508,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <WaveDivider color={isDark ? "#0d1117" : "#f9fafb"} />
 
       {/* ── PORTFOLIO ───────────────────────────────── */}
       <section id="portfolio" className="py-24 relative scroll-mt-20">
@@ -579,8 +567,6 @@ export default function Home() {
         </div>
       </section>
 
-      <WaveDivider color={isDark ? "#0a0a0f" : "#ffffff"} />
-
       {/* ── KENAPA PILIH KAMI ───────────────────────── */}
       <section className="py-24 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-6">
@@ -602,8 +588,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <WaveDivider color={isDark ? "#0d1117" : "#f9fafb"} />
 
       {/* ── HARGA ───────────────────────────────────── */}
       <section id="harga" className="py-24 relative scroll-mt-20">
