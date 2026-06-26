@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 /* ── Data ─────────────────────────────────────────────── */
 const WA_BASE = "https://wa.me/6285176718017?text=";
@@ -211,36 +211,6 @@ function BackToTop({ isDark }: { isDark: boolean }) {
 
 const marqueeClients = ["Hendra Motor", "Bu Siti", "CV Maju Jaya", "Toko Batik Yanti", "FirstCar", "LokerMJL", "Sambal Jubleg", "Warung Teh Ani"];
 
-/* ── Particles ───────────────────────────────────────── */
-function Particles({ isDark }: { isDark: boolean }) {
-  const particles = useMemo(() => {
-    return Array.from({ length: 25 }, (_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: Math.random() > 0.5 ? "w-1.5 h-1.5" : "w-1 h-1",
-      duration: `${10 + Math.random() * 10}s`,
-      delay: `${Math.random() * 10}s`,
-    }));
-  }, []);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {particles.map((p) => (
-        <div
-          key={p.id}
-          className={`absolute rounded-full ${p.size} ${isDark ? "bg-blue-400/30" : "bg-blue-500/20"}`}
-          style={{
-            top: p.top,
-            left: p.left,
-            animation: `particleFloat ${p.duration} linear ${p.delay} infinite`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 /* ── Page ─────────────────────────────────────────────── */
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -405,23 +375,13 @@ export default function Home() {
           0% { width: 0%; }
           100% { width: 100%; }
         }
+        @keyframes gradientShift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
         @keyframes loaderPulse {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.6; transform: scale(1.03); }
-        }
-        @keyframes particleFloat {
-          0% { transform: translateY(0) translateX(0); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
-        }
-        @property --angle {
-          syntax: '<angle>';
-          initial-value: 0deg;
-          inherits: false;
-        }
-        @keyframes rotateGradient {
-          to { --angle: 360deg; }
         }
       `}} />
 
@@ -439,8 +399,8 @@ export default function Home() {
             <a href="#proses" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Proses</a>
             <a href="#portfolio" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Portfolio</a>
             <a href="#harga" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Harga</a>
-            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center p-[2px] rounded-xl font-semibold text-white transition" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
-              <span className="px-5 py-2 bg-[#0a0a0f] rounded-[10px] text-sm font-bold text-white hover:bg-[#12121a] transition">Konsultasi Gratis</span>
+            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold text-sm hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">
+              Konsultasi Gratis
             </a>
           </div>
 
@@ -458,8 +418,8 @@ export default function Home() {
             <a href="#proses" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Proses</a>
             <a href="#portfolio" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Portfolio</a>
             <a href="#harga" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Harga</a>
-            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="inline-flex items-center justify-center p-[2px] rounded-xl font-semibold text-white transition w-full" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
-              <span className="px-5 py-2.5 bg-[#0a0a0f] rounded-[10px] text-sm font-bold text-white text-center flex-1">Konsultasi Gratis</span>
+            <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-sm text-center w-full hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">
+              Konsultasi Gratis
             </a>
           </div>
         </div>
@@ -480,7 +440,6 @@ export default function Home() {
           <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[120px]" />
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-[100px]" />
         </div>
-        <Particles isDark={isDark} />
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
           <F>
             <div className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 mb-8 ${isDark ? "bg-blue-500/10 border border-blue-500/20" : "bg-blue-50 border border-blue-200"}`}>
@@ -502,11 +461,11 @@ export default function Home() {
           </F>
           <F delay={300}>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <a href="#harga" className="inline-flex items-center justify-center p-[2px] rounded-xl font-bold transition" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
-                <span className="px-8 py-4 bg-[#0a0a0f] rounded-[10px] text-white text-base font-bold hover:bg-[#12121a] transition text-center">Lihat Paket</span>
+              <a href="#harga" className="px-8 py-4 bg-blue-600 text-white rounded-lg text-base font-bold hover:bg-blue-700 transition text-center shadow-lg shadow-blue-600/20">
+                Lihat Paket
               </a>
-              <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center p-[2px] rounded-xl font-bold transition" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
-                <span className={`px-8 py-4 rounded-[10px] text-base font-bold transition text-center ${isDark ? "bg-[#0a0a0f] text-white hover:bg-[#12121a]" : "bg-[#0a0a0f] text-white hover:bg-[#12121a]"}`}>Konsultasi via WhatsApp</span>
+              <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className={`px-8 py-4 rounded-lg text-base font-bold transition text-center border ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-gray-300 text-gray-900 hover:bg-gray-100"}`}>
+                Konsultasi via WhatsApp
               </a>
             </div>
           </F>
@@ -734,8 +693,8 @@ export default function Home() {
             {pricing.map((p, i) => (
               <F key={p.name} delay={i * 100}>
                 {p.pop ? (
-                  <div className="relative p-[2px] rounded-2xl scale-[1.02] shadow-2xl shadow-blue-600/20" style={{ background: "conic-gradient(from var(--angle, 0deg), #2563eb, #7c3aed, #ec4899, #2563eb)", animation: "rotateGradient 3s linear infinite" }}>
-                    <div className="p-8 rounded-[14px] backdrop-blur-xl border border-white/10 bg-gradient-to-b from-blue-600/90 to-blue-800/90">
+                  <div className="relative rounded-2xl scale-[1.02] shadow-2xl shadow-blue-600/20 border border-blue-500/30 bg-gradient-to-b from-blue-600 to-blue-800">
+                    <div className="p-8 rounded-2xl backdrop-blur-xl">
                       <div className="text-xs font-bold text-white bg-emerald-500 px-3 py-1 rounded-full inline-block mb-4">Terpopuler</div>
                       <h3 className="font-bold text-xl mb-2 text-white">{p.name}</h3>
                       <div className="text-3xl font-extrabold mb-1 text-white">{p.price}</div>
