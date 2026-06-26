@@ -20,9 +20,9 @@ const processes = [
 ];
 
 const portfolios = [
-  { name: "FirstCar", year: "2025", tag: "Marketplace", img: "/firstcar-cover.jpg", gradient: "from-blue-500 to-blue-700" },
-  { name: "LokerMJL", year: "2026", tag: "Dashboard Admin", img: "/lokermjl-cover.jpg", gradient: "from-indigo-500 to-indigo-700" },
-  { name: "Sambal Jubleg", year: "2026", tag: "POS System", img: "/Sambal-jubleg.png", gradient: "from-red-500 to-orange-500" },
+  { name: "FirstCar", year: "2025", tag: "Marketplace", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=600&h=400&fit=crop", gradient: "from-blue-500 to-blue-700", url: "#" },
+  { name: "LokerMJL", year: "2026", tag: "Dashboard Admin", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop", gradient: "from-indigo-500 to-indigo-700", url: "https://lokermjl.com" },
+  { name: "Sambal Jubleg", year: "2026", tag: "POS System", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop", gradient: "from-red-500 to-orange-500", url: "https://sambaljubleg.com" },
 ];
 
 const pricing = [
@@ -81,27 +81,39 @@ function F({ children, className = "", delay = 0 }: { children: React.ReactNode;
   );
 }
 
-function FAQ({ q, a }: { q: string; a: string }) {
+function FAQ({ q, a, isDark }: { q: string; a: string; isDark: boolean }) {
   const [o, setO] = useState(false);
   return (
-    <div className="border-b border-white/5 last:border-0">
+    <div className={`border-b last:border-0 ${isDark ? "border-white/5" : "border-gray-200"}`}>
       <button onClick={() => setO(!o)} className="w-full flex items-center justify-between gap-4 py-5 text-left cursor-pointer group">
-        <span className="font-semibold text-base text-white group-hover:text-blue-400 transition-colors">{q}</span>
-        <span className="text-gray-500 text-xl flex-shrink-0 transition-transform duration-300" style={{ transform: o ? "rotate(180deg)" : "rotate(0)" }}>▾</span>
+        <span className={`font-semibold text-base transition-colors ${isDark ? "text-white group-hover:text-blue-400" : "text-gray-900 group-hover:text-blue-600"}`}>{q}</span>
+        <span className={`text-xl flex-shrink-0 transition-transform duration-300 ${isDark ? "text-gray-500" : "text-gray-400"}`} style={{ transform: o ? "rotate(180deg)" : "rotate(0)" }}>▾</span>
       </button>
       <div className="overflow-hidden transition-all duration-300" style={{ maxHeight: o ? "200px" : "0" }}>
-        <p className="text-gray-400 text-sm leading-relaxed pb-5 pr-8">{a}</p>
+        <p className={`text-sm leading-relaxed pb-5 pr-8 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{a}</p>
       </div>
     </div>
   );
 }
 
-function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
+function Hamburger({ open, onClick, isDark }: { open: boolean; onClick: () => void; isDark: boolean }) {
   return (
     <button onClick={onClick} className="md:hidden relative w-8 h-8 flex flex-col justify-center items-center gap-1.5 cursor-pointer" aria-label="Menu">
-      <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${open ? "rotate-45 translate-y-2" : ""}`} />
-      <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${open ? "opacity-0" : ""}`} />
-      <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${open ? "-rotate-45 -translate-y-2" : ""}`} />
+      <span className={`block w-6 h-0.5 transition-all duration-300 ${isDark ? "bg-white" : "bg-gray-900"} ${open ? "rotate-45 translate-y-2" : ""}`} />
+      <span className={`block w-6 h-0.5 transition-all duration-300 ${isDark ? "bg-white" : "bg-gray-900"} ${open ? "opacity-0" : ""}`} />
+      <span className={`block w-6 h-0.5 transition-all duration-300 ${isDark ? "bg-white" : "bg-gray-900"} ${open ? "-rotate-45 -translate-y-2" : ""}`} />
+    </button>
+  );
+}
+
+function DarkModeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) {
+  return (
+    <button
+      onClick={onToggle}
+      className="w-9 h-9 rounded-full flex items-center justify-center text-lg cursor-pointer transition-all duration-300 hover:scale-110"
+      aria-label="Toggle dark mode"
+    >
+      {isDark ? "☀️" : "🌙"}
     </button>
   );
 }
@@ -119,7 +131,7 @@ function FloatingWA() {
       href={wa("Halo LM Studio, saya tertarik dengan layanan web Anda.")}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-110"
+      className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-110 animate-fadeIn"
       aria-label="Chat WhatsApp"
     >
       <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -129,101 +141,219 @@ function FloatingWA() {
   );
 }
 
+function BackToTop({ isDark }: { isDark: boolean }) {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShow(window.scrollY > 400);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!show) return null;
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className={`fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 animate-fadeIn ${isDark ? "bg-white/10 hover:bg-white/20 shadow-black/30" : "bg-gray-900/10 hover:bg-gray-900/20 shadow-gray-400/30"}`}
+      aria-label="Back to top"
+    >
+      <span className={`text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>↑</span>
+    </button>
+  );
+}
+
 /* ── Page ─────────────────────────────────────────────── */
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
+  /* Dark mode */
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") return true;
+    const stored = localStorage.getItem("theme");
+    if (stored) return stored === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+  const toggleDark = useCallback(() => {
+    setIsDark((prev) => {
+      const next = !prev;
+      localStorage.setItem("theme", next ? "dark" : "light");
+      document.documentElement.classList.toggle("dark", next);
+      return next;
+    });
+  }, []);
+
+  /* Scroll progress */
+  const [scrollPct, setScrollPct] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      setScrollPct(docHeight > 0 ? (scrollTop / docHeight) * 100 : 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* Typing effect */
+  const fullLine1 = "Automate Your Business";
+  const fullLine2 = "with Modern Web";
+  const [line1Text, setLine1Text] = useState("");
+  const [line2Text, setLine2Text] = useState("");
+  const [cursor, setCursor] = useState(true);
+  const [typingDone, setTypingDone] = useState(false);
+  const [phase, setPhase] = useState<"line1" | "pause1" | "line2" | "done">("line1");
+
+  useEffect(() => {
+    const blink = setInterval(() => setCursor((c) => !c), 530);
+    return () => clearInterval(blink);
+  }, []);
+
+  useEffect(() => {
+    if (phase === "line1") {
+      if (line1Text.length < fullLine1.length) {
+        const t = setTimeout(() => setLine1Text(fullLine1.slice(0, line1Text.length + 1)), 60);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setPhase("pause1"), 800);
+        return () => clearTimeout(t);
+      }
+    } else if (phase === "pause1") {
+      const t = setTimeout(() => setPhase("line2"), 100);
+      return () => clearTimeout(t);
+    } else if (phase === "line2") {
+      if (line2Text.length < fullLine2.length) {
+        const t = setTimeout(() => setLine2Text(fullLine2.slice(0, line2Text.length + 1)), 60);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => { setPhase("done"); setTypingDone(true); }, 600);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [phase, line1Text, line2Text]);
+
   return (
-    <main className="bg-[#0a0a0f] text-white antialiased">
+    <main className={`transition-colors duration-300 antialiased ${isDark ? "bg-[#0a0a0f] text-white" : "bg-white text-gray-900"}`}>
+
+      {/* Animated gradient keyframes */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
+      `}} />
 
       {/* ── NAV ─────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f]/80 backdrop-blur-2xl border-b border-white/5">
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${isDark ? "bg-[#0a0a0f]/80 backdrop-blur-2xl border-b border-white/5" : "bg-white/80 backdrop-blur-2xl border-b border-gray-200"}`}>
+        {/* Scroll progress bar */}
+        <div className="absolute top-0 left-0 h-[3px] bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-150" style={{ width: `${scrollPct}%` }} />
+
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
           <span className="text-xl font-bold text-blue-500">LM Studio</span>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8 text-sm text-gray-400">
-            <a href="#layanan" className="hover:text-white transition">Layanan</a>
-            <a href="#proses" className="hover:text-white transition">Proses</a>
-            <a href="#portfolio" className="hover:text-white transition">Portfolio</a>
-            <a href="#harga" className="hover:text-white transition">Harga</a>
+          <div className="hidden md:flex items-center gap-8 text-sm">
+            <a href="#layanan" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Layanan</a>
+            <a href="#proses" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Proses</a>
+            <a href="#portfolio" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Portfolio</a>
+            <a href="#harga" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Harga</a>
             <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">Konsultasi Gratis</a>
           </div>
 
-          {/* Mobile hamburger */}
-          <Hamburger open={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
+          {/* Mobile: dark toggle + hamburger */}
+          <div className="flex items-center gap-2 md:hidden">
+            <DarkModeToggle isDark={isDark} onToggle={toggleDark} />
+            <Hamburger open={menuOpen} onClick={() => setMenuOpen(!menuOpen)} isDark={isDark} />
+          </div>
         </div>
 
         {/* Mobile menu */}
-        <div className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? "max-h-80 border-t border-white/5" : "max-h-0"}`}>
-          <div className="px-6 py-4 flex flex-col gap-4 text-sm text-gray-400">
-            <a href="#layanan" onClick={closeMenu} className="hover:text-white transition py-2">Layanan</a>
-            <a href="#proses" onClick={closeMenu} className="hover:text-white transition py-2">Proses</a>
-            <a href="#portfolio" onClick={closeMenu} className="hover:text-white transition py-2">Portfolio</a>
-            <a href="#harga" onClick={closeMenu} className="hover:text-white transition py-2">Harga</a>
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? "max-h-80" : "max-h-0"}`}>
+          <div className={`px-6 py-4 flex flex-col gap-4 text-sm border-t ${isDark ? "border-white/5 text-gray-400" : "border-gray-200 text-gray-500"}`}>
+            <a href="#layanan" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Layanan</a>
+            <a href="#proses" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Proses</a>
+            <a href="#portfolio" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Portfolio</a>
+            <a href="#harga" onClick={closeMenu} className={`transition py-2 ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Harga</a>
             <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-center hover:bg-blue-700 transition">Konsultasi Gratis</a>
           </div>
         </div>
       </nav>
 
       {/* ── HERO ────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden scroll-mt-20">
-        <div className="absolute inset-0">
+      <section className={`relative min-h-screen flex items-center overflow-hidden scroll-mt-20 ${isDark ? "" : ""}`}>
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div
+            className="absolute inset-0 opacity-15"
+            style={{
+              background: "linear-gradient(-45deg, #2563eb, #0ea5e9, #6366f1, #3b82f6)",
+              backgroundSize: "400% 400%",
+              animation: "gradientShift 18s ease infinite",
+            }}
+          />
           <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[120px]" />
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-[100px]" />
         </div>
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
           <F>
-            <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-lg px-4 py-2 mb-8">
+            <div className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 mb-8 ${isDark ? "bg-blue-500/10 border border-blue-500/20" : "bg-blue-50 border border-blue-200"}`}>
               <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              <span className="text-blue-300 text-sm font-medium">Layanan Web untuk UMKM Ciayumajakuning</span>
+              <span className={`text-sm font-medium ${isDark ? "text-blue-300" : "text-blue-600"}`}>Layanan Web untuk UMKM Ciayumajakuning</span>
             </div>
           </F>
           <F delay={100}>
-            <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-6 max-w-4xl">
-              Automate Your Business<br />with Modern Web
+            <h1 className={`font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6 max-w-4xl ${isDark ? "text-white" : "text-gray-900"}`}>
+              {line1Text}
+              {!typingDone && <span className={`inline-block w-[3px] h-[0.85em] ml-1 align-middle ${isDark ? "bg-white" : "bg-gray-900"} ${cursor ? "opacity-100" : "opacity-0"}`} />}
+              {line2Text.length > 0 && (<><br />{line2Text}{phase !== "done" && <span className={`inline-block w-[3px] h-[0.85em] ml-1 align-middle ${isDark ? "bg-white" : "bg-gray-900"} ${cursor ? "opacity-100" : "opacity-0"}`} />}</>)}
             </h1>
           </F>
           <F delay={200}>
-            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
+            <p className={`text-lg md:text-xl max-w-2xl mb-10 leading-relaxed ${isDark ? "text-gray-400" : "text-gray-500"}`}>
               Kami bantu UMKM dan bisnis lokal punya website yang rapi, cepat, dan siap dipakai — tanpa ribet.
             </p>
           </F>
           <F delay={300}>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
               <a href="#harga" className="px-8 py-4 bg-blue-600 text-white font-bold text-base rounded-lg hover:bg-blue-700 transition text-center">Lihat Paket</a>
-              <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold text-base rounded-lg hover:bg-white/10 transition text-center">Konsultasi via WhatsApp</a>
+              <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className={`px-8 py-4 font-bold text-base rounded-lg transition text-center ${isDark ? "bg-white/5 border border-white/10 text-white hover:bg-white/10" : "bg-gray-100 border border-gray-200 text-gray-900 hover:bg-gray-200"}`}>Konsultasi via WhatsApp</a>
             </div>
           </F>
           <F delay={400}>
             <div className="flex items-center gap-8">
-              <div className="text-center"><div className="font-bold text-2xl text-white">50+</div><div className="text-gray-500 text-sm">Followers</div></div>
-              <div className="w-px h-8 bg-white/10" />
-              <div className="text-center"><div className="font-bold text-2xl text-white">10+</div><div className="text-gray-500 text-sm">Klien</div></div>
-              <div className="w-px h-8 bg-white/10" />
-              <div className="text-center"><div className="font-bold text-2xl text-white">2024</div><div className="text-gray-500 text-sm">Berdiri</div></div>
+              <div className="text-center"><div className={`font-bold text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>50+</div><div className={`text-sm ${isDark ? "text-gray-500" : "text-gray-400"}`}>Followers</div></div>
+              <div className={`w-px h-8 ${isDark ? "bg-white/10" : "bg-gray-200"}`} />
+              <div className="text-center"><div className={`font-bold text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>10+</div><div className={`text-sm ${isDark ? "text-gray-500" : "text-gray-400"}`}>Klien</div></div>
+              <div className={`w-px h-8 ${isDark ? "bg-white/10" : "bg-gray-200"}`} />
+              <div className="text-center"><div className={`font-bold text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>2024</div><div className={`text-sm ${isDark ? "text-gray-500" : "text-gray-400"}`}>Berdiri</div></div>
             </div>
           </F>
         </div>
       </section>
 
       {/* ── LAYANAN ─────────────────────────────────── */}
-      <section id="layanan" className="py-24 relative scroll-mt-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" />
+      <section id="layanan" className={`py-24 relative scroll-mt-20`}>
+        <div className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" : "bg-gradient-to-b from-white via-gray-50 to-white"}`} />
         <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Layanan</span></F>
-            <F delay={50}><h2 className="text-4xl font-bold mt-3">Apa yang kami kerjakan</h2></F>
-            <F delay={100}><p className="text-gray-500 mt-3 text-lg">Dari landing page sederhana sampai sistem web kompleks.</p></F>
+            <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Apa yang kami kerjakan</h2></F>
+            <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Dari landing page sederhana sampai sistem web kompleks.</p></F>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((s, i) => (
               <F key={s.title} delay={i * 100}>
-                <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30 hover:bg-white/[0.04] transition-all duration-300 group h-full">
+                <div className={`p-8 rounded-2xl h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group ${isDark ? "bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30 hover:bg-white/[0.04]" : "bg-gray-50 border border-gray-200 hover:border-blue-300 hover:bg-white hover:shadow-blue-100"}`}>
                   <div className="text-3xl mb-5">{s.icon}</div>
-                  <h3 className="font-bold text-lg mb-2">{s.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed mb-4">{s.desc}</p>
+                  <h3 className={`font-bold text-lg mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{s.title}</h3>
+                  <p className={`text-sm leading-relaxed mb-4 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{s.desc}</p>
                   <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full">{s.tag}</span>
                 </div>
               </F>
@@ -237,16 +367,16 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Proses Kerja</span></F>
-            <F delay={50}><h2 className="text-4xl font-bold mt-3">Cara kami bekerja</h2></F>
-            <F delay={100}><p className="text-gray-500 mt-3 text-lg">Simpel dan transparan.</p></F>
+            <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Cara kami bekerja</h2></F>
+            <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Simpel dan transparan.</p></F>
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             {processes.map((p, i) => (
               <F key={p.n} delay={i * 100}>
-                <div className="text-center p-6">
+                <div className={`text-center p-6 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${isDark ? "" : "bg-gray-50"}`}>
                   <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-lg font-bold mx-auto mb-5 ${i === 3 ? "bg-gradient-to-br from-emerald-500 to-teal-500 text-white" : "bg-blue-500/10 text-blue-400"}`}>{p.n}</div>
-                  <h3 className="font-bold text-lg mb-2">{p.t}</h3>
-                  <p className="text-gray-400 text-sm">{p.d}</p>
+                  <h3 className={`font-bold text-lg mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{p.t}</h3>
+                  <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>{p.d}</p>
                 </div>
               </F>
             ))}
@@ -256,30 +386,36 @@ export default function Home() {
 
       {/* ── PORTFOLIO ───────────────────────────────── */}
       <section id="portfolio" className="py-24 relative scroll-mt-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" />
+        <div className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" : "bg-gradient-to-b from-white via-gray-50 to-white"}`} />
         <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Portfolio</span></F>
-            <F delay={50}><h2 className="text-4xl font-bold mt-3">Project yang kami kerjakan</h2></F>
+            <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Project yang kami kerjakan</h2></F>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {portfolios.map((p, i) => (
               <F key={p.name} delay={i * 100}>
-                <div className="rounded-2xl overflow-hidden bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30 transition-all duration-300 group">
-                  <div className={`h-48 bg-gradient-to-br ${p.gradient} flex items-center justify-center relative overflow-hidden`}>
+                <a href={p.url} target="_blank" rel="noopener noreferrer" className={`block rounded-2xl overflow-hidden transition-all duration-300 group hover:scale-[1.02] hover:shadow-2xl ${isDark ? "bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30" : "bg-gray-50 border border-gray-200 hover:border-blue-300 hover:shadow-blue-100"}`}>
+                  <div className={`h-48 bg-gradient-to-br ${p.gradient} relative overflow-hidden`}>
                     <img
                       src={p.img}
                       alt={p.name}
                       loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
+                      <h3 className="text-white font-bold text-xl mb-1">{p.name}</h3>
+                      <span className="text-blue-300 text-sm font-semibold mb-3">{p.tag}</span>
+                      <span className="px-4 py-2 bg-white/10 backdrop-blur-sm text-white text-sm font-semibold rounded-lg border border-white/20 group-hover:bg-white/20 transition">Lihat Live →</span>
+                    </div>
                     <div className="absolute top-4 right-4 bg-black/40 backdrop-blur text-xs font-semibold px-3 py-1 rounded-full text-white">{p.year}</div>
                   </div>
                   <div className="p-6">
-                    <h3 className="font-bold text-lg mb-1">{p.name}</h3>
+                    <h3 className={`font-bold text-lg mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>{p.name}</h3>
                     <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full">{p.tag}</span>
                   </div>
-                </div>
+                </a>
               </F>
             ))}
           </div>
@@ -291,16 +427,16 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Keunggulan</span></F>
-            <F delay={50}><h2 className="text-4xl font-bold mt-3">Kenapa pilih LM Studio?</h2></F>
-            <F delay={100}><p className="text-gray-500 mt-3 text-lg">Bukan cuma bikin website — kami jaga hubungan jangka panjang.</p></F>
+            <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Kenapa pilih LM Studio?</h2></F>
+            <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Bukan cuma bikin website — kami jaga hubungan jangka panjang.</p></F>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {whyUs.map((w, i) => (
               <F key={w.title} delay={i * 100}>
-                <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30 hover:bg-white/[0.04] transition-all duration-300 h-full text-center">
+                <div className={`p-8 rounded-2xl h-full text-center transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${isDark ? "bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30 hover:bg-white/[0.04]" : "bg-gray-50 border border-gray-200 hover:border-blue-300 hover:bg-white"}`}>
                   <div className="text-3xl mb-5">{w.icon}</div>
-                  <h3 className="font-bold text-lg mb-2">{w.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{w.desc}</p>
+                  <h3 className={`font-bold text-lg mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{w.title}</h3>
+                  <p className={`text-sm leading-relaxed ${isDark ? "text-gray-400" : "text-gray-500"}`}>{w.desc}</p>
                 </div>
               </F>
             ))}
@@ -310,26 +446,26 @@ export default function Home() {
 
       {/* ── HARGA ───────────────────────────────────── */}
       <section id="harga" className="py-24 relative scroll-mt-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" />
+        <div className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f]" : "bg-gradient-to-b from-white via-gray-50 to-white"}`} />
         <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Harga</span></F>
-            <F delay={50}><h2 className="text-4xl font-bold mt-3">Pilih Paket</h2></F>
-            <F delay={100}><p className="text-gray-500 mt-3 text-lg">Transparan, tanpa biaya tersembunyi</p></F>
+            <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Pilih Paket</h2></F>
+            <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Transparan, tanpa biaya tersembunyi</p></F>
           </div>
           <div className="grid md:grid-cols-3 gap-6 items-start">
             {pricing.map((p, i) => (
               <F key={p.name} delay={i * 100}>
-                <div className={`p-8 rounded-2xl border transition-all duration-300 ${p.pop ? "bg-gradient-to-b from-blue-600 to-blue-800 border-blue-400/30 shadow-2xl shadow-blue-600/20 scale-[1.02]" : "bg-white/[0.02] border-white/[0.06] hover:border-blue-500/30"}`}>
+                <div className={`p-8 rounded-2xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${p.pop ? "bg-gradient-to-b from-blue-600 to-blue-800 border-blue-400/30 shadow-2xl shadow-blue-600/20 scale-[1.02]" : isDark ? "bg-white/[0.02] border-white/[0.06] hover:border-blue-500/30" : "bg-gray-50 border-gray-200 hover:border-blue-300"}`}>
                   {p.pop && <div className="text-xs font-bold text-white bg-emerald-500 px-3 py-1 rounded-full inline-block mb-4">Terpopuler</div>}
-                  <h3 className="font-bold text-xl mb-2">{p.name}</h3>
+                  <h3 className={`font-bold text-xl mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{p.name}</h3>
                   <div className={`text-3xl font-extrabold mb-1 ${p.pop ? "text-white" : "text-blue-400"}`}>{p.price}</div>
-                  <p className="text-gray-500 text-sm mb-6">{p.desc}</p>
+                  <p className={`text-sm mb-6 ${isDark ? "text-gray-500" : "text-gray-400"}`}>{p.desc}</p>
                   <ul className="space-y-3 text-sm mb-8">
                     {p.f.map((f) => (
                       <li key={f} className="flex items-center gap-2">
                         <span className={p.pop ? "text-emerald-300" : "text-emerald-400"}>✓</span>
-                        <span className="text-gray-300">{f}</span>
+                        <span className={isDark ? "text-gray-300" : "text-gray-600"}>{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -337,7 +473,7 @@ export default function Home() {
                     href={wa(`Halo LM Studio, saya tertarik paket ${p.name}.`)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`block text-center py-3 font-semibold rounded-lg transition ${p.pop ? "bg-white text-blue-700 hover:shadow-xl" : "border border-white/10 text-white hover:bg-white/5"}`}
+                    className={`block text-center py-3 font-semibold rounded-lg transition ${p.pop ? "bg-white text-blue-700 hover:shadow-xl" : isDark ? "border border-white/10 text-white hover:bg-white/5" : "border border-gray-300 text-gray-900 hover:bg-gray-100"}`}
                   >
                     Pesan Sekarang
                   </a>
@@ -346,10 +482,10 @@ export default function Home() {
             ))}
           </div>
           <F delay={300}>
-            <div className="mt-6 p-8 rounded-2xl bg-white/[0.02] border border-dashed border-white/10 text-center">
-              <h3 className="font-bold text-lg mb-2">Aplikasi Web Custom</h3>
-              <p className="text-gray-400 text-sm mb-1">Mulai Rp 5.000.000</p>
-              <p className="text-gray-500 text-sm mb-4">Butuh sistem khusus? Diskusi dulu — scope &amp; harga menyesuaikan.</p>
+            <div className={`mt-6 p-8 rounded-2xl border border-dashed text-center transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${isDark ? "bg-white/[0.02] border-white/10" : "bg-gray-50 border-gray-300"}`}>
+              <h3 className={`font-bold text-lg mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>Aplikasi Web Custom</h3>
+              <p className={`text-sm mb-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>Mulai Rp 5.000.000</p>
+              <p className={`text-sm mb-4 ${isDark ? "text-gray-500" : "text-gray-400"}`}>Butuh sistem khusus? Diskusi dulu — scope &amp; harga menyesuaikan.</p>
               <a href={wa("Halo LM Studio, saya butuh aplikasi web custom.")} target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Diskusi via WhatsApp</a>
             </div>
           </F>
@@ -361,17 +497,17 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Testimoni</span></F>
-            <F delay={50}><h2 className="text-4xl font-bold mt-3">Kata mereka yang sudah percaya</h2></F>
+            <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Kata mereka yang sudah percaya</h2></F>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {testi.map((t, i) => (
               <F key={t.name} delay={i * 100}>
-                <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/20 transition-all duration-300">
+                <div className={`p-6 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${isDark ? "bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/20" : "bg-gray-50 border border-gray-200 hover:border-blue-200"}`}>
                   <div className="text-amber-400 text-sm mb-3">★★★★★</div>
-                  <p className="text-gray-300 text-sm mb-4 leading-relaxed">&quot;{t.t}&quot;</p>
+                  <p className={`text-sm mb-4 leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>&quot;{t.t}&quot;</p>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white" style={{ backgroundColor: t.c + "30", color: t.c }}>{t.i}</div>
-                    <div><div className="font-semibold text-sm">{t.name}</div><div className="text-gray-500 text-xs">{t.role}</div></div>
+                    <div><div className={`font-semibold text-sm ${isDark ? "text-white" : "text-gray-900"}`}>{t.name}</div><div className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"}`}>{t.role}</div></div>
                   </div>
                 </div>
               </F>
@@ -385,11 +521,11 @@ export default function Home() {
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-12">
             <F><span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">FAQ</span></F>
-            <F delay={50}><h2 className="text-4xl font-bold mt-3">Pertanyaan yang Sering Ditanyakan</h2></F>
+            <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Pertanyaan yang Sering Ditanyakan</h2></F>
           </div>
           <F delay={100}>
-            <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
-              {faqs.map((f) => <FAQ key={f.q} q={f.q} a={f.a} />)}
+            <div className={`rounded-2xl border overflow-hidden ${isDark ? "bg-white/[0.02] border-white/[0.06]" : "bg-gray-50 border-gray-200"}`}>
+              {faqs.map((f) => <FAQ key={f.q} q={f.q} a={f.a} isDark={isDark} />)}
             </div>
           </F>
         </div>
@@ -411,22 +547,23 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ──────────────────────────────────── */}
-      <footer className="border-t border-white/5 py-12">
+      <footer className={`border-t py-12 ${isDark ? "border-white/5" : "border-gray-200"}`}>
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <span className="text-xl font-bold text-blue-500">LM Studio</span>
-            <p className="text-sm text-gray-500 mt-1">Bagian dari ekosistem lokermjl.com</p>
+            <p className={`text-sm mt-1 ${isDark ? "text-gray-500" : "text-gray-400"}`}>Bagian dari ekosistem lokermjl.com</p>
           </div>
-          <div className="flex items-center gap-6 text-sm text-gray-400">
-            <a href="https://instagram.com/lokermjl" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Instagram</a>
-            <a href="https://lokermjl.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">lokermjl.com</a>
+          <div className={`flex items-center gap-6 text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+            <a href="https://instagram.com/lokermjl" target="_blank" rel="noopener noreferrer" className={`transition ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>Instagram</a>
+            <a href="https://lokermjl.com" target="_blank" rel="noopener noreferrer" className={`transition ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}>lokermjl.com</a>
           </div>
-          <div className="text-xs text-gray-600">© 2026 LM Studio. All rights reserved.</div>
+          <div className={`text-xs ${isDark ? "text-gray-600" : "text-gray-400"}`}>© 2026 LM Studio. All rights reserved.</div>
         </div>
       </footer>
 
-      {/* ── FLOATING WA ─────────────────────────────── */}
+      {/* ── FLOATING BUTTONS ─────────────────────── */}
       <FloatingWA />
+      <BackToTop isDark={isDark} />
     </main>
   );
 }
