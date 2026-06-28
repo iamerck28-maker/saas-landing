@@ -211,6 +211,133 @@ function BackToTop({ isDark }: { isDark: boolean }) {
 
 const marqueeClients = ["Hendra Motor", "Bu Siti", "CV Maju Jaya", "Toko Batik Yanti", "FirstCar", "LokerMJL", "Sambal Jubleg", "Warung Teh Ani"];
 
+/* ── AutoSlide Testimoni ─────────────────────────────── */
+function AutoSlideTestimoni({ testi, isDark }: { testi: Array<{ name: string; role: string; i: string; c: string; t: string }>; isDark: boolean }) {
+  const [active, setActive] = useState(0);
+  const len = testi.length;
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startAuto = useCallback(() => {
+    intervalRef.current = setInterval(() => {
+      setActive((prev) => (prev + 1) % len);
+    }, 4000);
+  }, [len]);
+
+  const stopAuto = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }, []);
+
+  const goTo = useCallback((idx: number) => {
+    stopAuto();
+    setActive(idx);
+    startAuto();
+  }, [stopAuto, startAuto]);
+
+  useEffect(() => {
+    startAuto();
+    return stopAuto;
+  }, [startAuto, stopAuto]);
+
+  const prev = (active - 1 + len) % len;
+  const next = (active + 1) % len;
+
+  return (
+    <div className="relative max-w-md mx-auto" onMouseEnter={stopAuto} onMouseLeave={startAuto}>
+      {/* Cards stack */}
+      <div className="relative h-[320px] md:h-[280px] overflow-hidden">
+        {/* Previous card (peek) */}
+        <div
+          className="absolute inset-x-4 md:inset-x-0 top-3 cursor-pointer transition-all duration-500 opacity-30 scale-[0.92] blur-[1px]"
+          style={{ zIndex: 1 }}
+          onClick={() => goTo(prev)}
+        >
+          <GlassCard t={testi[prev]} isDark={isDark} />
+        </div>
+        {/* Active card */}
+        <div
+          className="absolute inset-x-0 top-0 transition-all duration-500"
+          style={{ zIndex: 2 }}
+        >
+          <div className="transition-all duration-500">
+            <GlassCard t={testi[active]} isDark={isDark} />
+          </div>
+        </div>
+        {/* Next card (peek) */}
+        <div
+          className="absolute inset-x-4 md:inset-x-0 bottom-3 cursor-pointer transition-all duration-500 opacity-30 scale-[0.92] blur-[1px]"
+          style={{ zIndex: 1 }}
+          onClick={() => goTo(next)}
+        >
+          <GlassCard t={testi[next]} isDark={isDark} />
+        </div>
+      </div>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-2 mt-6">
+        {testi.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className={`rounded-full transition-all duration-300 ${
+              i === active
+                ? "w-8 h-2.5 bg-cyan-500 shadow-lg shadow-cyan-500/30"
+                : "w-2.5 h-2.5 bg-white/20 hover:bg-white/40"
+            }`}
+            aria-label={`Testimoni ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GlassCard({ t, isDark }: { t: { name: string; role: string; i: string; c: string; t: string }; isDark: boolean }) {
+  return (
+    <div
+      className={`p-6 md:p-8 rounded-2xl backdrop-blur-xl border transition-all duration-300 ${
+        isDark
+          ? "bg-white/[0.06] border-white/[0.12] shadow-xl shadow-black/20"
+          : "bg-white/60 border-white/40 shadow-xl shadow-gray-200/80"
+      }`}
+      style={{
+        background: isDark
+          ? "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)"
+          : "linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+      }}
+    >
+      {/* Quote icon */}
+      <div className="text-4xl leading-none mb-2 opacity-30 select-none" style={{ color: t.c }}>
+        &ldquo;
+      </div>
+      {/* Stars */}
+      <div className="text-amber-400 text-sm mb-3">★★★★★</div>
+      {/* Text */}
+      <p className={`text-sm md:text-base mb-5 leading-relaxed line-clamp-3 ${isDark ? "text-gray-200" : "text-gray-700"}`}>
+        &quot;{t.t}&quot;
+      </p>
+      {/* Author */}
+      <div className="flex items-center gap-3">
+        <div
+          className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-lg shrink-0"
+          style={{
+            background: `linear-gradient(135deg, ${t.c}, ${t.c}cc)`,
+            boxShadow: `0 4px 15px ${t.c}40`,
+          }}
+        >
+          {t.i}
+        </div>
+        <div>
+          <div className={`font-semibold text-sm ${isDark ? "text-white" : "text-gray-900"}`}>{t.name}</div>
+          <div className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t.role}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Page ─────────────────────────────────────────────── */
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -736,35 +863,15 @@ export default function Home() {
       </section>
 
       {/* ── TESTIMONI ───────────────────────────────── */}
-      <section className="py-24 scroll-mt-20">
-        <div className="max-w-6xl mx-auto px-6">
+      <section className="py-24 scroll-mt-20 relative overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
             <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Testimoni</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Kata mereka yang sudah percaya</h2></F>
           </div>
-          <div className="relative">
-            {/* Fade gradient left */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-[#0a0a0f] to-transparent dark:block hidden" />
-            <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent dark:hidden block" />
-            {/* Scroll container */}
-            <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory flex gap-6 pb-4">
-              {testi.map((t) => (
-                <div key={t.name} className="min-w-[300px] md:min-w-[350px] flex-shrink-0 snap-center">
-                  <div className={`p-6 rounded-2xl h-full transition-all duration-300 ${isDark ? "bg-white/[0.02] border border-white/[0.06]" : "bg-gray-50 border border-gray-200"}`}>
-                    <div className="text-amber-400 text-sm mb-3">★★★★★</div>
-                    <p className={`text-sm mb-4 leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>&quot;{t.t}&quot;</p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white" style={{ backgroundColor: t.c + "30", color: t.c }}>{t.i}</div>
-                      <div><div className={`font-semibold text-sm ${isDark ? "text-white" : "text-gray-900"}`}>{t.name}</div><div className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"}`}>{t.role}</div></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {/* Fade gradient right */}
-            <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-[#0a0a0f] to-transparent dark:block hidden" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent dark:hidden block" />
-          </div>
+          <AutoSlideTestimoni testi={testi} isDark={isDark} />
         </div>
       </section>
 
