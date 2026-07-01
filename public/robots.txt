@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://iamerck28-maker.github.io/saas-landing/sitemap.xml

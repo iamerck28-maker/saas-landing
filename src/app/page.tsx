@@ -20,15 +20,15 @@ const processes = [
 ];
 
 const portfolios = [
-  { name: "FirstCar", year: "2025", tag: "Marketplace", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=600&h=400&fit=crop", beforeImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop", gradient: "from-blue-500 to-blue-700", url: "#" },
-  { name: "LokerMJL", year: "2026", tag: "Dashboard Admin", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop", beforeImg: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop", gradient: "from-indigo-500 to-indigo-700", url: "https://lokermjl.com" },
-  { name: "Sambal Jubleg", year: "2026", tag: "POS System", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop", beforeImg: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop", gradient: "from-red-500 to-orange-500", url: "https://sambaljubleg.com" },
+  { name: "FirstCar", year: "2025", tag: "Marketplace", img: "/saas-landing/firstcar-cover.jpg", beforeImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop", gradient: "from-blue-500 to-blue-700", url: "#" },
+  { name: "LokerMJL", year: "2026", tag: "Dashboard Admin", img: "/saas-landing/lokermjl-cover.jpg", beforeImg: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop", gradient: "from-indigo-500 to-indigo-700", url: "https://lokermjl.com" },
+  { name: "Sambal Jubleg", year: "2026", tag: "POS System", img: "/saas-landing/Sambal-jubleg.png", beforeImg: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop", gradient: "from-red-500 to-orange-500", url: "https://sambaljubleg.com" },
 ];
 
 const pricing = [
-  { name: "Starter", price: "Rp 2.000.000", pop: false, desc: "Kehadiran online pertama kali", f: ["Landing page 1 halaman", "Kontak & lokasi maps", "Mobile-friendly", "Domain .com (1 thn)", "Hosting (1 thn)", "7 hari kerja"] },
-  { name: "Bisnis", price: "Rp 3.500.000", pop: true, desc: "Tampil lebih profesional", f: ["Company profile 5 halaman", "Katalog produk", "Form kontak & WA button", "Domain .com & .id (1 thn)", "Hosting (1 thn)", "14 hari kerja"] },
-  { name: "Pro", price: "Rp 6.000.000", pop: false, desc: "Sistem lebih lengkap", f: ["Website 5-10 halaman", "Toko online / katalog", "Blog / artikel", "Domain by request (1 thn)", "Hosting (1 thn)", "Basic SEO", "21 hari kerja", "1 bulan free revisi"] },
+  { name: "Starter", monthly: "Rp 200.000", yearly: "Rp 2.000.000", pop: false, desc: "Kehadiran online pertama kali", f: ["Landing page 1 halaman", "Kontak & lokasi maps", "Mobile-friendly", "Domain .com (1 thn)", "Hosting (1 thn)", "7 hari kerja"] },
+  { name: "Bisnis", monthly: "Rp 350.000", yearly: "Rp 3.500.000", pop: true, desc: "Tampil lebih profesional", f: ["Company profile 5 halaman", "Katalog produk", "Form kontak & WA button", "Domain .com & .id (1 thn)", "Hosting (1 thn)", "14 hari kerja"] },
+  { name: "Pro", monthly: "Rp 600.000", yearly: "Rp 6.000.000", pop: false, desc: "Sistem lebih lengkap", f: ["Website 5-10 halaman", "Toko online / katalog", "Blog / artikel", "Domain by request (1 thn)", "Hosting (1 thn)", "Basic SEO", "21 hari kerja", "1 bulan free revisi"] },
 ];
 
 const whyUs = [
@@ -180,7 +180,7 @@ function FloatingWA() {
       href={wa("Halo LM Studio, saya tertarik dengan layanan web Anda.")}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-110 animate-fadeIn"
+      className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-green-500/50 animate-fadeIn hover:animate-pulse"
       aria-label="Chat WhatsApp"
     >
       <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -201,7 +201,7 @@ function BackToTop({ isDark }: { isDark: boolean }) {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className={`fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 animate-fadeIn ${isDark ? "bg-white/10 hover:bg-white/20 shadow-black/30" : "bg-gray-900/10 hover:bg-gray-900/20 shadow-gray-400/30"}`}
+      className={`fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1 animate-fadeIn ${isDark ? "bg-white/10 hover:bg-white/20 shadow-black/30" : "bg-gray-900/10 hover:bg-gray-900/20 shadow-gray-400/30"}`}
       aria-label="Back to top"
     >
       <span className={`text-2xl ${isDark ? "text-white" : "text-gray-900"}`}>↑</span>
@@ -210,6 +210,16 @@ function BackToTop({ isDark }: { isDark: boolean }) {
 }
 
 const marqueeClients = ["Hendra Motor", "Bu Siti", "CV Maju Jaya", "Toko Batik Yanti", "FirstCar", "LokerMJL", "Sambal Jubleg", "Warung Teh Ani"];
+const marqueeLogos: Record<string, string> = {
+  "Hendra Motor": "🔧",
+  "Bu Siti": "🍽️",
+  "CV Maju Jaya": "📋",
+  "Toko Batik Yanti": "👘",
+  "FirstCar": "🚗",
+  "LokerMJL": "💼",
+  "Sambal Jubleg": "🌶️",
+  "Warung Teh Ani": "🫖",
+};
 
 /* ── AutoSlide Testimoni ─────────────────────────────── */
 function AutoSlideTestimoni({ testi, isDark }: { testi: Array<{ name: string; role: string; i: string; c: string; t: string }>; isDark: boolean }) {
@@ -293,6 +303,14 @@ function AutoSlideTestimoni({ testi, isDark }: { testi: Array<{ name: string; ro
 }
 
 function GlassCard({ t, isDark }: { t: { name: string; role: string; i: string; c: string; t: string }; isDark: boolean }) {
+  // Generate a more attractive avatar based on initial
+  const avatarGradients: Record<string, string> = {
+    "HG": "linear-gradient(135deg, #2563eb, #0ea5e9)",
+    "SR": "linear-gradient(135deg, #7c3aed, #a855f7)",
+    "DK": "linear-gradient(135deg, #0891b2, #06b6d4)",
+    "YS": "linear-gradient(135deg, #d946ef, #ec4899)",
+  };
+  const avatarGrad = avatarGradients[t.i] || `linear-gradient(135deg, ${t.c}, ${t.c}cc)`;
   return (
     <div
       className={`p-6 md:p-8 rounded-2xl backdrop-blur-xl border transition-all duration-300 ${
@@ -323,7 +341,7 @@ function GlassCard({ t, isDark }: { t: { name: string; role: string; i: string; 
         <div
           className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-lg shrink-0"
           style={{
-            background: `linear-gradient(135deg, ${t.c}, ${t.c}cc)`,
+            background: avatarGrad,
             boxShadow: `0 4px 15px ${t.c}40`,
           }}
         >
@@ -370,6 +388,12 @@ export default function Home() {
     });
   }, []);
 
+  /* Pricing annual toggle */
+  const [annual, setAnnual] = useState(false);
+
+  /* Smooth scroll: active section */
+  const [activeSection, setActiveSection] = useState("");
+
   /* Dark mode — default always dark */
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === "undefined") return true;
@@ -390,6 +414,20 @@ export default function Home() {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
   }, [isDark]);
+
+  /* Active section highlight on scroll */
+  useEffect(() => {
+    const sections = document.querySelectorAll("section[id]");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, { rootMargin: "-40% 0px -55% 0px" });
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
 
   /* Scroll progress */
   const [scrollPct, setScrollPct] = useState(0);
@@ -514,10 +552,10 @@ export default function Home() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8 text-sm">
-            <a href="#layanan" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Layanan</a>
-            <a href="#proses" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Proses</a>
-            <a href="#portfolio" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Portfolio</a>
-            <a href="#harga" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>Harga</a>
+            <a href="#layanan" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"} ${activeSection === "layanan" ? "text-cyan-400 font-semibold" : ""}`}>Layanan</a>
+            <a href="#proses" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"} ${activeSection === "proses" ? "text-cyan-400 font-semibold" : ""}`}>Proses</a>
+            <a href="#portfolio" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"} ${activeSection === "portfolio" ? "text-cyan-400 font-semibold" : ""}`}>Portfolio</a>
+            <a href="#harga" className={`transition ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"} ${activeSection === "harga" ? "text-cyan-400 font-semibold" : ""}`}>Harga</a>
             <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className="px-5 py-2 bg-cyan-500 text-white rounded-lg font-semibold text-sm hover:bg-cyan-600 transition shadow-lg shadow-cyan-500/20">
               Konsultasi Gratis
             </a>
@@ -559,6 +597,8 @@ export default function Home() {
           <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-blue-600 rounded-full blur-[120px] z-0 dark:opacity-100 opacity-50" style={{ animation: "glowOrb1 20s ease-in-out infinite" }} />
           <div className="absolute top-1/3 right-[5%] w-[400px] h-[400px] bg-cyan-500 rounded-full blur-[120px] z-0 dark:opacity-100 opacity-50" style={{ animation: "glowOrb2 25s ease-in-out infinite 5s" }} />
           <div className="absolute bottom-[10%] left-1/3 w-[300px] h-[300px] bg-indigo-600 rounded-full blur-[120px] z-0 dark:opacity-100 opacity-50" style={{ animation: "glowOrb1 18s ease-in-out infinite 8s" }} />
+          {/* Subtle particle dots */}
+          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
         </div>
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
           <F>
@@ -581,12 +621,26 @@ export default function Home() {
           </F>
           <F delay={300}>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <a href="#harga" className="px-8 py-4 bg-cyan-500 text-white rounded-lg text-base font-bold hover:bg-cyan-600 transition text-center shadow-lg shadow-cyan-500/20">
-                Lihat Paket
+              <a href="#harga" className="group relative px-8 py-4 bg-cyan-500 text-white rounded-lg text-base font-bold hover:bg-cyan-600 transition text-center shadow-lg shadow-cyan-500/20 overflow-hidden">
+                <span className="relative z-10">Lihat Paket</span>
+                <span className="absolute inset-0 bg-white/20 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
               </a>
-              <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className={`px-8 py-4 rounded-lg text-base font-bold transition text-center border ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-gray-300 text-gray-900 hover:bg-gray-100"}`}>
-                Konsultasi via WhatsApp
+              <a href={wa("Halo LM Studio, saya ingin konsultasi.")} target="_blank" rel="noopener noreferrer" className={`group relative px-8 py-4 rounded-lg text-base font-bold transition text-center border overflow-hidden ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-gray-300 text-gray-900 hover:bg-gray-100"}`}>
+                <span className="relative z-10">Konsultasi via WhatsApp</span>
+                <span className="absolute inset-0 bg-white/5 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
               </a>
+            </div>
+          </F>
+          <F delay={350}>
+            <div className="flex flex-wrap items-center gap-6 mb-10">
+              <div className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 ${isDark ? "bg-emerald-500/10 border border-emerald-500/20" : "bg-emerald-50 border border-emerald-200"}`}>
+                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                <span className={`text-sm font-medium ${isDark ? "text-emerald-300" : "text-emerald-600"}`}>Trusted by 50+ UMKM</span>
+              </div>
+              <div className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 ${isDark ? "bg-amber-500/10 border border-amber-500/20" : "bg-amber-50 border border-amber-200"}`}>
+                <span className="text-sm">⭐</span>
+                <span className={`text-sm font-medium ${isDark ? "text-amber-300" : "text-amber-600"}`}>4.9 Rating dari Klien</span>
+              </div>
             </div>
           </F>
           <F delay={400}>
@@ -611,8 +665,9 @@ export default function Home() {
         <div className="overflow-hidden">
           <div className="flex whitespace-nowrap" style={{ animation: "marquee 30s linear infinite" }}>
             {[...marqueeClients, ...marqueeClients].map((name, i) => (
-              <span key={`${name}-${i}`} className={`inline-flex items-center mx-4 px-6 py-3 rounded-lg border text-sm font-semibold transition-colors duration-300 shrink-0 ${isDark ? "border-white/10 text-gray-400 hover:text-white hover:border-white/30 bg-white/[0.02]" : "border-gray-200 text-gray-400 hover:text-gray-900 hover:border-gray-400 bg-white"}`}>
-                {name}
+              <span key={`${name}-${i}`} className={`inline-flex items-center gap-2 mx-4 px-5 py-3 rounded-lg border text-sm font-semibold transition-all duration-300 shrink-0 ${isDark ? "border-white/10 text-gray-400 hover:text-white hover:border-white/30 bg-white/[0.02]" : "border-gray-200 text-gray-400 hover:text-gray-900 hover:border-gray-400 bg-white"}`}>
+                <span className="text-lg">{marqueeLogos[name] || "⭐"}</span>
+                <span>{name}</span>
               </span>
             ))}
           </div>
@@ -652,37 +707,57 @@ export default function Home() {
           <div className="text-center mb-16">
             <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Proses Kerja</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Cara kami bekerja</h2></F>
-            <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Simpel dan transparan.</p></F>
+            <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Simpel, transparan, dan terstruktur.</p></F>
           </div>
           {/* Desktop: Horizontal Timeline */}
           <div className="hidden md:block">
-            <div className="relative">
+            <div className="relative py-8">
               {/* Connecting line */}
-              <div className="absolute top-6 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 to-blue-600" />
+              <div className="absolute top-12 left-[10%] right-[10%] h-[3px] bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-500 rounded-full" />
               <div className="flex justify-between">
                 {processes.map((p, i) => (
                   <F key={p.n} delay={i * 200}>
-                    <div className="relative flex flex-col items-center" style={{ width: '180px' }}>
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold z-10 ${i === 3 ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30" : "bg-blue-600 text-white shadow-lg shadow-blue-600/30"}`}>{p.n}</div>
-                      <h3 className={`font-bold text-base mt-4 mb-2 text-center ${isDark ? "text-white" : "text-gray-900"}`}>{p.t}</h3>
-                      <p className={`text-xs text-center ${isDark ? "text-gray-400" : "text-gray-500"}`}>{p.d}</p>
+                    <div className="relative flex flex-col items-center group" style={{ width: '180px' }}>
+                      <div className={`w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold z-10 transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl ${
+                        i === 3
+                          ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                          : i === 2
+                          ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/30"
+                          : i === 1
+                          ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
+                          : "bg-indigo-500 text-white shadow-lg shadow-indigo-500/30"
+                      }`}>{p.n}</div>
+                      <div className="mt-4 text-center">
+                        <h3 className={`font-bold text-lg mb-2 transition-colors duration-300 group-hover:text-cyan-400 ${isDark ? "text-white" : "text-gray-900"}`}>{p.t}</h3>
+                        <p className={`text-sm leading-relaxed ${isDark ? "text-gray-400" : "text-gray-500"}`}>{p.d}</p>
+                      </div>
                     </div>
                   </F>
                 ))}
               </div>
             </div>
           </div>
-          {/* Mobile: Vertical Timeline */}
+          {/* Mobile: Vertical Timeline with icons */}
           <div className="md:hidden">
-            <div className="relative pl-10">
-              <div className="absolute left-[15px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-blue-500 to-blue-600" />
-              <div className="flex flex-col gap-8">
+            <div className="relative pl-12">
+              <div className="absolute left-[18px] top-0 bottom-0 w-[3px] bg-gradient-to-b from-indigo-500 via-blue-500 to-emerald-500 rounded-full" />
+              <div className="flex flex-col gap-10">
                 {processes.map((p, i) => (
                   <F key={p.n} delay={i * 200}>
                     <div className="relative">
-                      <div className={`absolute -left-10 top-1 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${i === 3 ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30" : "bg-blue-600 text-white shadow-lg shadow-blue-600/30"}`}>{p.n}</div>
-                      <h3 className={`font-bold text-lg mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>{p.t}</h3>
-                      <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>{p.d}</p>
+                      <div className={`absolute -left-9 top-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                        i === 3
+                          ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                          : i === 2
+                          ? "bg-cyan-500 text-white"
+                          : i === 1
+                          ? "bg-blue-500 text-white"
+                          : "bg-indigo-500 text-white"
+                      }`}>{p.n}</div>
+                      <div className={`ml-2 p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/[0.02] border border-white/[0.06]" : "bg-gray-50 border border-gray-200"}`}>
+                        <h3 className={`font-bold text-lg mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>{p.t}</h3>
+                        <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>{p.d}</p>
+                      </div>
                     </div>
                   </F>
                 ))}
@@ -704,13 +779,13 @@ export default function Home() {
             {portfolios.map((p, i) => (
               <F key={p.name} delay={i * 100}>
                 <div className={`rounded-2xl overflow-hidden transition-all duration-300 group hover:scale-[1.02] hover:shadow-2xl ${isDark ? "bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30" : "bg-gray-50 border border-gray-200 hover:border-blue-300 hover:shadow-blue-100"}`}>
-                  <div className={`h-48 bg-gradient-to-br ${p.gradient} relative overflow-hidden`}>
+                  <div className={`h-48 bg-gradient-to-br ${p.gradient} relative overflow-hidden rounded-t-2xl`}>
                     {/* After image (default) */}
                     <img
                       src={p.img}
                       alt={p.name}
                       loading="lazy"
-                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${showBefore.has(i) ? "opacity-0" : "opacity-100"} ${!showBefore.has(i) ? "group-hover:scale-110" : ""} ${!showBefore.has(i) ? "transition-transform duration-700" : ""}`}
+                      className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${showBefore.has(i) ? "opacity-0 scale-110" : "opacity-100 scale-100"}`}
                     />
                     {/* Before image */}
                     {p.beforeImg && (
@@ -718,7 +793,7 @@ export default function Home() {
                         src={p.beforeImg}
                         alt={`${p.name} before`}
                         loading="lazy"
-                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${showBefore.has(i) ? "opacity-100" : "opacity-0"}`}
+                        className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${showBefore.has(i) ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
                       />
                     )}
                     {/* Hover overlay */}
@@ -810,6 +885,24 @@ export default function Home() {
             <F><span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Harga</span></F>
             <F delay={50}><h2 className={`text-4xl font-bold mt-3 ${isDark ? "text-white" : "text-gray-900"}`}>Pilih Paket</h2></F>
             <F delay={100}><p className={`mt-3 text-lg ${isDark ? "text-gray-500" : "text-gray-400"}`}>Transparan, tanpa biaya tersembunyi</p></F>
+            {/* Toggle Monthly/Yearly */}
+            <F delay={150}>
+              <div className="flex items-center justify-center gap-3 mt-6">
+                <span className={`text-sm font-medium ${!annual ? "text-white" : "text-gray-500"}`}>Bulanan</span>
+                <button
+                  onClick={() => setAnnual(!annual)}
+                  className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${annual ? "bg-cyan-500" : "bg-gray-700"}`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-300 ${annual ? "translate-x-7" : "translate-x-0"}`}
+                  />
+                </button>
+                <span className={`text-sm font-medium ${annual ? "text-white" : "text-gray-500"}`}>
+                  Tahunan
+                  <span className="ml-1 text-xs text-emerald-400 font-semibold">Hemat 17%</span>
+                </span>
+              </div>
+            </F>
           </div>
           <div className="grid md:grid-cols-3 gap-6 items-start">
             {pricing.map((p, i) => (
@@ -819,7 +912,8 @@ export default function Home() {
                     <div className="p-8 rounded-2xl backdrop-blur-xl">
                       <div className="text-xs font-bold text-white bg-emerald-500 px-3 py-1 rounded-full inline-block mb-4">Terpopuler</div>
                       <h3 className="font-bold text-xl mb-2 text-white">{p.name}</h3>
-                      <div className="text-3xl font-extrabold mb-1 text-white">{p.price}</div>
+                      <div className="text-3xl font-extrabold mb-1 text-white">{annual ? p.yearly : p.monthly}</div>
+                      {annual && <p className="text-xs text-blue-300 mb-2">{(Number(p.yearly.replace(/[^0-9]/g,""))/12).toLocaleString("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0})}/bln</p>}
                       <p className="text-sm mb-6 text-blue-200">{p.desc}</p>
                       <ul className="space-y-3 text-sm mb-8">
                         {p.f.map((f) => (
@@ -829,13 +923,13 @@ export default function Home() {
                           </li>
                         ))}
                       </ul>
-                      <a href={wa(`Halo LM Studio, saya tertarik paket ${p.name}.`)} target="_blank" rel="noopener noreferrer" className="block text-center py-3 font-semibold rounded-lg transition bg-white text-blue-700 hover:shadow-xl">Pesan Sekarang</a>
+                      <a href={wa(`Halo LM Studio, saya tertarik paket ${p.name} (${annual ? "tahunan" : "bulanan"}).`)} target="_blank" rel="noopener noreferrer" className="block text-center py-3 font-semibold rounded-lg transition bg-white text-blue-700 hover:shadow-xl">Pesan Sekarang</a>
                     </div>
                   </div>
                 ) : (
                   <div className={`p-8 rounded-2xl backdrop-blur-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-blue-500/10 ${isDark ? "bg-white/[0.03] border-white/10 hover:border-blue-500/30" : "bg-white/80 border-white/10 hover:border-blue-500/30 hover:shadow-blue-500/10"}`}>
                     <h3 className={`font-bold text-xl mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{p.name}</h3>
-                    <div className={`text-3xl font-extrabold mb-1 text-blue-400`}>{p.price}</div>
+                    <div className={`text-3xl font-extrabold mb-1 text-blue-400`}>{annual ? p.yearly : p.monthly}</div>
                     <p className={`text-sm mb-6 ${isDark ? "text-gray-500" : "text-gray-400"}`}>{p.desc}</p>
                     <ul className="space-y-3 text-sm mb-8">
                       {p.f.map((f) => (
@@ -845,7 +939,7 @@ export default function Home() {
                         </li>
                       ))}
                     </ul>
-                    <a href={wa(`Halo LM Studio, saya tertarik paket ${p.name}.`)} target="_blank" rel="noopener noreferrer" className={`block text-center py-3 font-semibold rounded-lg transition ${isDark ? "border border-white/10 text-white hover:bg-white/5" : "border border-gray-300 text-gray-900 hover:bg-gray-100"}`}>Pesan Sekarang</a>
+                    <a href={wa(`Halo LM Studio, saya tertarik paket ${p.name} (${annual ? "tahunan" : "bulanan"}).`)} target="_blank" rel="noopener noreferrer" className={`block text-center py-3 font-semibold rounded-lg transition ${isDark ? "border border-white/10 text-white hover:bg-white/5" : "border border-gray-300 text-gray-900 hover:bg-gray-100"}`}>Pesan Sekarang</a>
                   </div>
                 )}
               </F>
